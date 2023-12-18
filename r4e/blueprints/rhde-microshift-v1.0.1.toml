@@ -76,13 +76,13 @@ ports = ["22:tcp", "80:tcp", "443:tcp", "6443:tcp", "5353:udp"]
 
 [[customizations.sshkey]]
 user = "root"
-key = "<ssh public key>"
+key = "<REPLACE_YOUR_SSH_PUB_KEY>"
 
 [[customizations.user]]
 name = "redhat"
 description = "Admin user"
-password = '<右記を実行した結果をここに入れる -> python3 -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())' >'
-key = "<ssh public key>"
+password = '<password hash obatained with: python3 -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())' >'
+key = "<REPLACE_YOUR_SSH_PUB_KEY>"
 home = "/home/redhat/"
 shell = "/usr/bin/bash"
 groups = ["users", "wheel"]
