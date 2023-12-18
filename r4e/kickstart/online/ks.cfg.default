@@ -1,0 +1,54 @@
+network --bootproto=dhcp --device=link --activate --onboot=on --hostname=microshift.local --noipv6
+keyboard --xlayouts='us'
+lang en_US.UTF-8
+timezone Asia/Tokyo --isUtc
+zerombr
+clearpart --all --initlabel
+part /boot/efi --size 200 --fstype=efi
+part /boot --size 800 --asprimary --fstype=xfs
+part pv.01 --grow
+volgroup rhel pv.01
+logvol / --fstype xfs --vgname rhel --size=20480 --name=root
+reboot
+text
+rootpw --lock
+user --groups=wheel --name=redhat --password=redhat --gecos="redhat"
+services --enabled=ostree-remount
+ostreesetup --nogpg --remote=edge --url=http://10.0.2.12:9000/ostree/repo/ --osname=rhel --ref=rhel/9/x86_64/edge
+#ostreesetup --nogpg --url=file:///run/install/repo/ostree/repo --osname=rhel --ref=rhel/9/x86_64/edge
+
+%post --log=/var/log/anaconda/post-install.log --erroronfail
+
+echo -e 'redhat\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
+
+mkdir -p /etc/crio
+cat > /etc/crio/openshift-pull-secret << PULLSECRETEOF
+<REPLACE_YOUR_PULL_SECRET>
+PULLSECRETEOF
+chmod 600 /etc/crio/openshift-pull-secret
+
+
+cat > /etc/resolv.conf << EOF
+nameserver 8.8.8.8
+EOF
+
+mkdir -p /root/.kube
+
+# Configure the firewall (rules reload is not necessary here)
+firewall-offline-cmd --zone=trusted --add-source=10.42.0.0/16
+firewall-offline-cmd --zone=trusted --add-source=169.254.169.1
+
+# Make the KUBECONFIG from MicroShift directly available for the root user
+echo -e 'export KUBECONFIG=/var/lib/microshift/resources/kubeadmin/kubeconfig' >> /root/.profile
+
+# rpm-ostree upgrade check
+cat <<EOF >  /etc/rpm-ostreed.conf
+
+[Daemon]
+AutomaticUpdatePolicy=stage
+EOF
+
+systemctl restart rpm-ostreed
+systemctl enable rpm-ostreed-automatic.timer --now
+
+%end

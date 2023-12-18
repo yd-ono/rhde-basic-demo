@@ -1,0 +1,175 @@
+name = "rhde-microshift-1.0.1"
+description = "RHDE Microshift Blueprints"
+version = "1.0.1"
+modules = []
+groups = []
+
+[[packages]]
+name = "cronie"
+version = "*"
+
+[[packages]]
+name = "cronie-anacron"
+version = "*"
+
+[[packages]]
+name = "microshift"
+version = "*"
+
+[[packages]]
+name = "NetworkManager-wifi"
+version = "*"
+
+[[packages]]
+name = "ansible-core"
+version = "*"
+
+[[packages]]
+name = "ostree"
+version = "*"
+
+[[packages]]
+name = "rpm-ostree"
+version = "*"
+
+[[packages]]
+name = "avahi"
+version = "*"
+
+[[packages]]
+name = "openshift-clients"
+version = "*"
+
+[[packages]]
+name = "git"
+version = "*"
+
+[[packages]]
+name = "iputils"
+version = "*"
+
+[[packages]]
+name = "bind-utils"
+version = "*"
+
+[[packages]]
+name = "net-tools"
+version = "*"
+
+[[packages]]
+name = "iotop"
+version = "*"
+
+[[packages]]
+name = "redhat-release"
+version = "*"
+
+[customizations]
+hostname = "microshift-node"
+
+[customizations.services]
+enabled = ["crio", "microshift"]
+hostname = "microshift-node"
+
+[customizations.firewall]
+ports = ["22:tcp", "80:tcp", "443:tcp", "6443:tcp", "5353:udp"]
+
+[[customizations.sshkey]]
+user = "root"
+key = "<ssh public key>"
+
+[[customizations.user]]
+name = "redhat"
+description = "Admin user"
+password = '<右記を実行した結果をここに入れる -> python3 -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())' >'
+key = "<ssh public key>"
+home = "/home/redhat/"
+shell = "/usr/bin/bash"
+groups = ["users", "wheel"]
+
+[[containers]]
+source = "ghcr.io/dexidp/dex:v2.37.0"
+
+[[containers]]
+source = "ghcr.io/external-secrets/external-secrets:v0.8.3-ubi"
+
+[[containers]]
+source = "quay.io/argoproj/argocd:latest"
+
+[[containers]]
+source = "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:09f55e49e179a6c3d541d1104fb4b71f45bb6ba5e2af75cdc80ba147d3900390"
+
+[[containers]]
+source = "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:1b23e41d96dff46945b9491eaa7d21e8940ed01bc7c1bd055137b7234152067f"
+
+[[containers]]
+source = "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:30e9611ba51801f731426533a8c34b8b153c00a3adb20e363b08186fbf945715"
+
+[[containers]]
+source = "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:392a225cf7a152e99cb478708a39de580779597f2b5c528bc85b15fbacf89b0f"
+
+[[containers]]
+source = "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:572450d593adb4f77153368461f32ceab0f69bb523a45a7845ef8005ebd799fb"
+
+[[containers]]
+source = "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:5acc2116dd7aad45422deceace9dfb3182bb6854fa4c45d5978b3c81c7a02e24"
+
+[[containers]]
+source = "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8db8a3708497fb6a8ef42faaa1bcc131af33347bc5960d368d401b77d5d9ba74"
+
+[[containers]]
+source = "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:a70e2c9c546d02844a54c1fa811b22e866ec0f426ea53eba4946c8729701c38e"
+
+[[containers]]
+source = "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:ea192e5c22d4a603ee94c63e4d4598ca4ab1cb3eae952d42f866b65f212be77e"
+
+[[containers]]
+source = "quay.io/skupper/config-sync:main"
+
+[[containers]]
+source = "quay.io/skupper/service-controller:main"
+
+[[containers]]
+source = "quay.io/skupper/site-controller:main"
+
+[[containers]]
+source = "quay.io/skupper/skupper-router:main"
+
+[[containers]]
+source = "quay.io/yono/dgw:3.3.0-amd64"
+
+[[containers]]
+source = "redis:7.0.11-alpine"
+
+[[containers]]
+source = "registry.access.redhat.com/ubi8/openssl@sha256:9e743d947be073808f7f1750a791a3dbd81e694e37161e8c6c6057c2c342d671"
+
+[[containers]]
+source = "registry.redhat.io/amq7/amq-broker-rhel8:7.11.1-2.1689584940"
+
+[[containers]]
+source = "registry.redhat.io/lvms4/topolvm-rhel8@sha256:f676e20b8ecdbe9f5fc994e2ff236a02d2afe666bf325e8ac02cd3a043df107e"
+
+[[containers]]
+source = "registry.redhat.io/openshift4/ose-csi-external-provisioner@sha256:778aa6e5ea046bfcd865e665679c30362dc8c00cfb33a0cdcc56b2395e8ab504"
+
+[[containers]]
+source = "registry.redhat.io/openshift4/ose-csi-external-resizer@sha256:837b32a0c432123e2605ad6d029e7f3b4489d9c52a9d272c7a133d41ad10db87"
+
+[[containers]]
+source = "registry.redhat.io/openshift4/ose-csi-livenessprobe@sha256:3c63c06561f20f5ead423946c6cc22030c397f0fe190004e6b5ccdb3bfaccdc4"
+
+[[containers]]
+source = "registry.redhat.io/openshift4/ose-csi-node-driver-registrar@sha256:71d42a2b26fca9690036c95e54aa3641702c4dc7ba1912f8804d777320f9fbf8"
+
+[[containers]]
+source = "quay.io/skupper/config-sync:main"
+
+[[containers]]
+source = "quay.io/skupper/site-controller:main"
+
+[[containers]]
+source = "quay.io/yono/dgw:3.3.0-amd64"
+
+[[containers]]
+source = "grafana/grafana:latest"

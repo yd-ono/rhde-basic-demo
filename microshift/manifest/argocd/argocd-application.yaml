@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  deletionGracePeriodSeconds: 0
+  name: cluster
+  namespace: argocd
+spec:
+  destination:
+    namespace: rhde-demo-deviceedge
+    server: https://kubernetes.default.svc
+  ignoreDifferences:
+  - group: apps
+    jsonPointers:
+    - /spec/replicas
+    kind: Deployment
+  - group: route.openshift.io
+    jsonPointers:
+    - /status
+    kind: Route
+  project: default
+  source:
+    helm:
+      ignoreMissingValueFiles: true
+      parameters:
+      - name: global.repoURL
+        value: $ARGOCD_APP_SOURCE_REPO_URL
+      - name: global.targetRevision
+        value: $ARGOCD_APP_SOURCE_TARGET_REVISION
+      - name: global.namespace
+        value: $ARGOCD_APP_NAMESPACE
+      - name: global.pattern
+        value: rhde-demo
+      - name: global.hubClusterDomain
+        value: apps.demo.sandbox2979.opentlc.com
+      - name: global.clusterVersion
+        value: "4.13"
+      - name: global.clusterPlatform
+        value: MicroShift
+      - name: clusterGroup.name
+        value: deviceedge
+      - name: clusterGroup.isHubCluster
+        value: "false"
+      valueFiles:
+      - /values-global.yaml
+      - /values-deviceedge.yaml
+    path: common/deviceedge-clustergroup
+    repoURL: https://github.com/yd-ono/multicloud-gitops-with-takebishi.git
+    targetRevision: rhde-demo
+  syncPolicy:
+    automated: {}
+    retry:
+      limit: 20

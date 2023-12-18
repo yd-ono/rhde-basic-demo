@@ -1,0 +1,11 @@
+---
+- name: Deploy application on microshift
+  hosts: all
+  tasks:
+    - name: Deploy application
+      vars:
+        microshift_image_pull_secret: "{{ lookup('file', '~/pull-secret.txt') }}"
+        microshift_app_manifests:
+          - /manifests/kustomization.yaml
+      ansible.builtin.import_role:
+        name: edge.microshift.app

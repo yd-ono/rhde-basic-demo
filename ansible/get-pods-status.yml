@@ -1,0 +1,11 @@
+---
+- name: Get Pods Status
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: run oc get pods
+      command: oc get pods -A
+      register: result
+    - name: show result
+      debug:
+        msg: "{{ result.stdout }}"
