@@ -3,8 +3,9 @@
   hosts: all
   gather_facts: true
   tasks:
+    - name: 
     - name: run oc get pods
-      command: oc get pods -A
+      command: oc --kubeconfig=/var/lib/microshift/resources/kubeadmin/kubeconfig get pods -A
       register: result
     - name: show result
       debug:
