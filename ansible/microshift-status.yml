@@ -5,5 +5,7 @@
     - name: MicroShiftサービスの状態をStartedであることを確認する
       ansible.builtin.systemd:
         name: microshift.service
-        state: started
+      register: microshift_status
       become: yes
+    - debug:
+        var: microshift_status.status.ActiveState
