@@ -29,6 +29,9 @@
     - name: make calls from localhost
       delegate_to: localhost
       block:
+        - name: pause
+          pause:
+            seconds: 300
         - name: get pods for all namespaces
           kubernetes.core.k8s_info:
             kind: pod
