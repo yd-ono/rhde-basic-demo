@@ -26,7 +26,7 @@
         permanent: true
       become: true
   tasks:
-    - name: Get a list of all pods from any namespace
+    - name: make calls from localhost
       delegate_to: localhost
       block:
         - name: get pods for all namespaces
