@@ -1,0 +1,3138 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "description": "realtime OEE visualizer",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 50
+              },
+              {
+                "color": "blue",
+                "value": 65
+              },
+              {
+                "color": "green",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "oee"
+            },
+            "properties": [
+              {
+                "id": "min"
+              },
+              {
+                "id": "max"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "oee"
+        }
+      ],
+      "title": "OEE",
+      "transformations": [],
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 7,
+        "x": 0,
+        "y": 11
+      },
+      "id": 44,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# 倉庫の状況",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.4",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 8,
+        "y": 11
+      },
+      "id": 45,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# 加工した色",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.4",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 15,
+        "y": 11
+      },
+      "id": 46,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# LEDの状況",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.4",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 20,
+        "y": 11
+      },
+      "id": 47,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# 仕分色",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.4",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "false": {
+                  "color": "transparent",
+                  "index": 1,
+                  "text": "停止"
+                },
+                "true": {
+                  "color": "purple",
+                  "index": 0,
+                  "text": "稼働"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 0,
+        "y": 13
+      },
+      "id": 12,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ws3$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "grafana/plc-state-ws"
+        }
+      ],
+      "title": "3",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "false": {
+                  "color": "transparent",
+                  "index": 1,
+                  "text": "停止"
+                },
+                "true": {
+                  "color": "purple",
+                  "index": 0,
+                  "text": "稼働"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 1,
+        "y": 13
+      },
+      "id": 11,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ws2$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "grafana/plc-state-ws"
+        }
+      ],
+      "title": "2",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "false": {
+                  "color": "transparent",
+                  "index": 1,
+                  "text": "停止"
+                },
+                "true": {
+                  "color": "purple",
+                  "index": 0,
+                  "text": "稼働"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 2,
+        "y": 13
+      },
+      "id": 6,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ws1$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "grafana/plc-state-ws"
+        }
+      ],
+      "title": "1",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {},
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 2,
+        "x": 3,
+        "y": 13
+      },
+      "id": 20,
+      "maxDataPoints": 66,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^sorting_cycleid$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "CycleID",
+      "type": "stat"
+    },
+    {
+      "datasource": {},
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 2,
+        "x": 5,
+        "y": 13
+      },
+      "id": 21,
+      "maxDataPoints": 66,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^sorting_ballid$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "BallID",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 1
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0
+                },
+                "white": {
+                  "color": "text",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 8,
+        "y": 13
+      },
+      "id": 37,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^BallID: 0\\-2$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "3",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "CycleID: 1",
+                "path": "1"
+              },
+              {
+                "alias": "CycleID: 2",
+                "path": "2"
+              },
+              {
+                "alias": "CycleID: 0",
+                "path": "0"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "all_predicted_color_list"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 0-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 0-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 0-2",
+                "path": "2"
+              }
+            ],
+            "keepTime": false,
+            "replace": false,
+            "source": "CycleID: 0"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 1-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 1-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 1-2",
+                "path": ""
+              }
+            ],
+            "source": "CycleID: 1"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 2-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 2-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 2-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 2"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 1
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0
+                },
+                "white": {
+                  "color": "text",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 9,
+        "y": 13
+      },
+      "id": 36,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^BallID: 0\\-1$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "2",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "CycleID: 1",
+                "path": "1"
+              },
+              {
+                "alias": "CycleID: 2",
+                "path": "2"
+              },
+              {
+                "alias": "CycleID: 0",
+                "path": "0"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "all_predicted_color_list"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 0-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 0-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 0-2",
+                "path": "2"
+              }
+            ],
+            "keepTime": false,
+            "replace": false,
+            "source": "CycleID: 0"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 1-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 1-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 1-2",
+                "path": ""
+              }
+            ],
+            "source": "CycleID: 1"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 2-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 2-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 2-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 2"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 1
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0
+                },
+                "white": {
+                  "color": "text",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 10,
+        "y": 13
+      },
+      "id": 35,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^BallID: 0\\-0$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "1",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "CycleID: 1",
+                "path": "1"
+              },
+              {
+                "alias": "CycleID: 2",
+                "path": "2"
+              },
+              {
+                "alias": "CycleID: 0",
+                "path": "0"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "all_predicted_color_list"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 0-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 0-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 0-2",
+                "path": "2"
+              }
+            ],
+            "keepTime": false,
+            "replace": false,
+            "source": "CycleID: 0"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 1-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 1-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 1-2",
+                "path": ""
+              }
+            ],
+            "source": "CycleID: 1"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 2-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 2-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 2-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 2"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 2,
+                  "text": "blue"
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0,
+                  "text": "red"
+                },
+                "white": {
+                  "color": "text",
+                  "index": 1,
+                  "text": "white"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "transparent",
+                "value": ""
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 11,
+        "y": 13
+      },
+      "id": 4,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^current_predicted_color$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "次の加工色",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "fail": {
+                  "color": "red",
+                  "index": 2,
+                  "text": "fail"
+                },
+                "off": {
+                  "color": "text",
+                  "index": 0,
+                  "text": "off"
+                },
+                "on": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "on"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 1,
+        "x": 15,
+        "y": 13
+      },
+      "id": 23,
+      "maxDataPoints": 5000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^status$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "LED status",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "color",
+                "path": "color"
+              },
+              {
+                "alias": "time",
+                "path": "time"
+              },
+              {
+                "alias": "status",
+                "path": "status"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "led"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 2,
+                  "text": "blue"
+                },
+                "red": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "red"
+                },
+                "white": {
+                  "color": "text",
+                  "index": 0,
+                  "text": "white"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 16,
+        "y": 13
+      },
+      "id": 26,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^color$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "LED点灯色",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "color",
+                "path": "color"
+              },
+              {
+                "alias": "time",
+                "path": "time"
+              },
+              {
+                "alias": "status",
+                "path": "status"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "led"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 1,
+                  "text": "blue"
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0,
+                  "text": "red"
+                },
+                "white": {
+                  "color": "text",
+                  "index": 2,
+                  "text": "white"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 20,
+        "y": 13
+      },
+      "id": 7,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^current_result_color$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "仕分けした色",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "false": {
+                  "color": "transparent",
+                  "index": 1,
+                  "text": "停止"
+                },
+                "true": {
+                  "color": "purple",
+                  "index": 0,
+                  "text": "稼働"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 0,
+        "y": 15
+      },
+      "id": 15,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ws6$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "grafana/plc-state-ws"
+        }
+      ],
+      "title": "6",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "false": {
+                  "color": "transparent",
+                  "index": 1,
+                  "text": "停止"
+                },
+                "true": {
+                  "color": "purple",
+                  "index": 0,
+                  "text": "稼働"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 1,
+        "y": 15
+      },
+      "id": 14,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ws5$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "grafana/plc-state-ws"
+        }
+      ],
+      "title": "5",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "false": {
+                  "color": "transparent",
+                  "index": 1,
+                  "text": "停止"
+                },
+                "true": {
+                  "color": "purple",
+                  "index": 0,
+                  "text": "稼働"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 2,
+        "y": 15
+      },
+      "id": 13,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ws4$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "grafana/plc-state-ws"
+        }
+      ],
+      "title": "4",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 1
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0
+                },
+                "white": {
+                  "color": "text",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 8,
+        "y": 15
+      },
+      "id": 40,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^BallID: 1\\-2$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "6",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "CycleID: 1",
+                "path": "1"
+              },
+              {
+                "alias": "CycleID: 2",
+                "path": "2"
+              },
+              {
+                "alias": "CycleID: 0",
+                "path": "0"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "all_predicted_color_list"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 0-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 0-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 0-2",
+                "path": "2"
+              }
+            ],
+            "keepTime": false,
+            "replace": false,
+            "source": "CycleID: 0"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 1-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 1-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 1-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 1"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 2-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 2-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 2-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 2"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 1
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0
+                },
+                "white": {
+                  "color": "text",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 9,
+        "y": 15
+      },
+      "id": 39,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^BallID: 1\\-1$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "5",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "CycleID: 1",
+                "path": "1"
+              },
+              {
+                "alias": "CycleID: 2",
+                "path": "2"
+              },
+              {
+                "alias": "CycleID: 0",
+                "path": "0"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "all_predicted_color_list"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 0-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 0-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 0-2",
+                "path": "2"
+              }
+            ],
+            "keepTime": false,
+            "replace": false,
+            "source": "CycleID: 0"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 1-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 1-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 1-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 1"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 2-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 2-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 2-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 2"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 1
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0
+                },
+                "white": {
+                  "color": "text",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 10,
+        "y": 15
+      },
+      "id": 38,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^BallID: 1\\-0$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "4",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "CycleID: 1",
+                "path": "1"
+              },
+              {
+                "alias": "CycleID: 2",
+                "path": "2"
+              },
+              {
+                "alias": "CycleID: 0",
+                "path": "0"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "all_predicted_color_list"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 0-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 0-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 0-2",
+                "path": "2"
+              }
+            ],
+            "keepTime": false,
+            "replace": false,
+            "source": "CycleID: 0"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 1-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 1-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 1-2",
+                "path": ""
+              }
+            ],
+            "source": "CycleID: 1"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 2-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 2-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 2-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 2"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "false": {
+                  "color": "transparent",
+                  "index": 1,
+                  "text": "停止"
+                },
+                "true": {
+                  "color": "purple",
+                  "index": 0,
+                  "text": "稼働"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 0,
+        "y": 17
+      },
+      "id": 18,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ws9$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "grafana/plc-state-ws"
+        }
+      ],
+      "title": "9",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "false": {
+                  "color": "transparent",
+                  "index": 1,
+                  "text": "停止"
+                },
+                "true": {
+                  "color": "purple",
+                  "index": 0,
+                  "text": "稼働"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 1,
+        "y": 17
+      },
+      "id": 17,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ws8$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "grafana/plc-state-ws"
+        }
+      ],
+      "title": "8",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "false": {
+                  "color": "transparent",
+                  "index": 1,
+                  "text": "停止"
+                },
+                "true": {
+                  "color": "purple",
+                  "index": 0,
+                  "text": "稼働"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 2,
+        "y": 17
+      },
+      "id": 16,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^ws7$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "grafana/plc-state-ws"
+        }
+      ],
+      "title": "7",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 1
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0
+                },
+                "white": {
+                  "color": "text",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 8,
+        "y": 17
+      },
+      "id": 43,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^BallID: 2\\-2$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "9",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "CycleID: 1",
+                "path": "1"
+              },
+              {
+                "alias": "CycleID: 2",
+                "path": "2"
+              },
+              {
+                "alias": "CycleID: 0",
+                "path": "0"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "all_predicted_color_list"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 0-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 0-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 0-2",
+                "path": "2"
+              }
+            ],
+            "keepTime": false,
+            "replace": false,
+            "source": "CycleID: 0"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 1-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 1-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 1-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 1"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 2-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 2-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 2-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 2"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 1
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0
+                },
+                "white": {
+                  "color": "text",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 9,
+        "y": 17
+      },
+      "id": 42,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^BallID: 2\\-1$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "8",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "CycleID: 1",
+                "path": "1"
+              },
+              {
+                "alias": "CycleID: 2",
+                "path": "2"
+              },
+              {
+                "alias": "CycleID: 0",
+                "path": "0"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "all_predicted_color_list"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 0-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 0-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 0-2",
+                "path": "2"
+              }
+            ],
+            "keepTime": false,
+            "replace": false,
+            "source": "CycleID: 0"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 1-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 1-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 1-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 1"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 2-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 2-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 2-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 2"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "f3940b89-5088-4eb4-b643-a0ec122fc564"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "blue": {
+                  "color": "blue",
+                  "index": 1
+                },
+                "red": {
+                  "color": "red",
+                  "index": 0
+                },
+                "white": {
+                  "color": "text",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "transparent",
+                  "index": 3
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "null+nan",
+                "result": {
+                  "color": "transparent",
+                  "index": 4
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 1,
+        "x": 10,
+        "y": 17
+      },
+      "id": 41,
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^BallID: 2\\-0$/",
+          "values": false
+        },
+        "textMode": "none"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "fd589345-e3ad-4a69-b5f9-bdc7760169fe"
+          },
+          "refId": "A",
+          "topic": "result"
+        }
+      ],
+      "title": "7",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "CycleID: 1",
+                "path": "1"
+              },
+              {
+                "alias": "CycleID: 2",
+                "path": "2"
+              },
+              {
+                "alias": "CycleID: 0",
+                "path": "0"
+              }
+            ],
+            "keepTime": true,
+            "replace": true,
+            "source": "all_predicted_color_list"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 0-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 0-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 0-2",
+                "path": "2"
+              }
+            ],
+            "keepTime": false,
+            "replace": false,
+            "source": "CycleID: 0"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 1-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 1-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 1-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 1"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "json",
+            "jsonPaths": [
+              {
+                "alias": "BallID: 2-0",
+                "path": "0"
+              },
+              {
+                "alias": "BallID: 2-1",
+                "path": "1"
+              },
+              {
+                "alias": "BallID: 2-2",
+                "path": "2"
+              }
+            ],
+            "source": "CycleID: 2"
+          }
+        }
+      ],
+      "type": "stat"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "OEE",
+  "uid": "c0ef5ad1-6c11-45b0-894b-af2e973641ab",
+  "version": 7,
+  "weekStart": ""
+}
