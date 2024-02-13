@@ -1,5 +1,5 @@
 ---
-- name: Deploy application on microshift
+- name: MicroShiftサービスの正常性確認手順
   hosts: all
   tasks:
     - name: MicroShiftサービスの状態を起動状態にする
