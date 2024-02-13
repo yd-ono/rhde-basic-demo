@@ -29,8 +29,6 @@ umount "$tmp/iso"
 cp ks.cfg "$tmp/new/iso/"
 cp isolinux.cfg "$tmp/new/iso/isolinux/"
 cp grub.cfg "$tmp/new/iso/EFI/BOOT/"
-
-## comment out for offline image
 cp -r ostree "$tmp/new/iso/"
 
 # Push directory of new ISO for later commands

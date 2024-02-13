@@ -14,8 +14,7 @@ text
 rootpw --lock
 user --groups=wheel --name=redhat --password=redhat --gecos="redhat"
 services --enabled=ostree-remount
-ostreesetup --nogpg --remote=edge --url=http://10.0.2.12:9000/ostree/repo/ --osname=rhel --ref=rhel/9/x86_64/edge
-#ostreesetup --nogpg --url=file:///run/install/repo/ostree/repo --osname=rhel --ref=rhel/9/x86_64/edge
+ostreesetup --nogpg --remote=edge --url=http://YOUR_OSTREE_REPO_IP:9000/ostree/repo/ --osname=rhel --ref=rhel/9/x86_64/edge
 
 %post --log=/var/log/anaconda/post-install.log --erroronfail
 

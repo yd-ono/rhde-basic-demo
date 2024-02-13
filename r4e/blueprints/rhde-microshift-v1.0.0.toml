@@ -1,11 +1,43 @@
-name = "rhde-microshift-1.0.0"
-description = "RHDE Microshift Blueprints"
+name = "rhde-1.0.0"
+description = "RHDE Basic Blueprints"
 version = "1.0.0"
 modules = []
 groups = []
 
 [[packages]]
-name = "microshift"
+name = "subscription-manager"
+version = "*"
+
+[[packages]]
+name = "cronie"
+version = "*"
+
+[[packages]]
+name = "skupper-cli"
+version = "*"
+
+[[packages]]
+name = "cronie-anacron"
+version = "*"
+
+[[packages]]
+name = "python3-pip"
+version = "*"
+
+[[packages]]
+name = "python3-kubernetes"
+version = "*"
+
+[[packages]]
+name = "subscription-manager"
+version = "*"
+
+[[packages]]
+name = "NetworkManager-wifi"
+version = "*"
+
+[[packages]]
+name = "ansible-core"
 version = "*"
 
 [[packages]]
@@ -18,10 +50,6 @@ version = "*"
 
 [[packages]]
 name = "avahi"
-version = "*"
-
-[[packages]]
-name = "openshift-clients"
 version = "*"
 
 [[packages]]
