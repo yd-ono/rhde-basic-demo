@@ -27,10 +27,12 @@
       become: true
   tasks:
     - name: Get a list of all pods from any namespace
-      kubernetes.core.k8s_info:
-        kind: Pod
-      register: pod_list
-
-    - name: 実行結果
-      debug:
-        msg: "{{ pod_list }}"
+      delegate_to: localhost
+      block:
+        - name: get pods for all namespaces
+          kubernetes.core.k8s_info:
+            kind: pod
+          register: pod_list
+        - name: output result
+          debug:
+            msg: "{{ pod_list }}"
