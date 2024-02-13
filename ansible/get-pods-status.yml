@@ -6,6 +6,8 @@
     kubernetes.core.k8s:
       kubeconfig: /tmp/kubeconfig
       validate_certs: false
+    kubernetes.core.k8s_info:
+      kubeconfig: /tmp/kubeconfig
   pre_tasks:
     - name: slurp up kubeconfig
       ansible.builtin.slurp:
@@ -29,12 +31,9 @@
     - name: make calls from localhost
       delegate_to: localhost
       block:
-        - name: pause
-          pause:
-            seconds: 300
         - name: get pods for all namespaces
           kubernetes.core.k8s_info:
-            kind: pod
+            kind: Pod
           register: pod_list
         - name: output result
           debug:
