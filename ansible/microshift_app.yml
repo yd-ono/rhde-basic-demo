@@ -16,3 +16,8 @@
           - ./argocd/argocd-apps.yaml
       ansible.builtin.import_role:
         name: edge.microshift.app
+
+    - name: Restart service microshift service
+      service:
+        name: microshift
+        state: restarted
