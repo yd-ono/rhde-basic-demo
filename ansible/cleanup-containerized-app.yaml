@@ -1,0 +1,31 @@
+---
+
+- name: cleanup containerized application deployment
+  hosts: all
+  tasks:
+    - name: teardown kube play
+      ansible.builtin.shell:
+        cmd: podman play kube --down "/home//process-control.yaml"
+    - name: remove kube yaml file
+      ansible.builtin.file:
+        path: "/home//process-control.yaml"
+        state: absent
+    - name: remove images from the system
+      containers.podman.podman_image:
+        name: ""
+        state: absent
+      loop:
+        - quay.io/device-edge-workshops/process-control-mqtt:1.0.0
+        - quay.io/device-edge-workshops/process-control-simulate:1.0.0
+        - quay.io/device-edge-workshops/process-control-control:1.0.0
+        - quay.io/device-edge-workshops/process-control-ui:1.0.0
+      loop_control:
+        loop_var: image
+    - name: close firewall port
+      ansible.posix.firewalld:
+        port: 1881/tcp
+        zone: public
+        permanent: true
+        state: disabled
+        immediate: true
+      become: true

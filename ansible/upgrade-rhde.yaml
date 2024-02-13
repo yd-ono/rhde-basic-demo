@@ -1,0 +1,16 @@
+---
+
+- name: upgrade RHDE
+  hosts:
+    - all
+  tasks:
+    - name: upgrade RHDE
+      ansible.posix.rpm_ostree_upgrade:
+      register: rhde_upgraded
+  post_tasks:
+    - name: reboot device
+      ansible.builtin.reboot:
+        reboot_command: systemctl reboot
+        reboot_timeout: 300
+      when:
+        - rhde_upgraded.changed

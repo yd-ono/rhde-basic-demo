@@ -1,0 +1,54 @@
+---
+
+- name: create a directory for the ui service
+  ansible.builtin.file:
+    path: /var/ui
+    state: directory
+  register: ui_directory_created
+
+- name: clone the code to the directory
+  ansible.builtin.git:
+    repo: https://github.com/jjaswanson4/process-demo-ui.git
+    dest: /var/ui
+  when:
+    - ui_directory_created.changed
+
+- name: install the depedencies
+  community.general.npm:
+    path: /var/ui
+    production: true
+
+- name: modify package.json
+  ansible.builtin.lineinfile:
+    path: /var/ui/package.json
+    regexp: 'start'
+    line: '    "start": "node-red flows.json"'
+
+- name: push out systemd file
+  ansible.builtin.copy:
+    src: files/ui.service
+    dest: /etc/systemd/system/ui.service
+    owner: root
+    group: root
+    mode: '0644'
+  register: ui_service_file
+
+- name: reload systemd if needed
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when:
+    - ui_service_file.changed
+
+- name: ensure the service is enabled/started
+  ansible.builtin.systemd:
+    name: ui.service
+    state: started
+    enabled: true
+
+- name: allow 1881 through the firewall
+  ansible.posix.firewalld:
+    port: 1881/tcp
+    zone: public
+    permanent: true
+    state: enabled
+    immediate: true

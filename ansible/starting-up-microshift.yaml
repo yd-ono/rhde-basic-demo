@@ -1,0 +1,26 @@
+---
+
+- name: configure and start microshift
+  hosts:
+    - all
+  become: true
+  pre_tasks:
+    - name: copy crio config over
+      ansible.builtin.copy:
+        src: files/microshift.conf
+        dest: /etc/crio/crio.conf.d/microshift.conf
+    - name: push out pull secret
+      ansible.builtin.copy:
+        content: ""
+        dest: /etc/crio/openshift-pull-secret
+    - name: fix for https://github.com/cri-o/cri-o/issues/6197
+      ansible.builtin.lineinfile:
+        path: /etc/containers/policy.json
+        regexp: '^.*keyPaths.*'
+        line: '                    "keyPath": "/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release"'
+  tasks:
+    - name: start microshift
+      ansible.builtin.systemd:
+        name: microshift
+        state: started
+        enabled: true

@@ -1,0 +1,61 @@
+---
+
+- name: cleanup bare metal app
+  hosts:
+    - all
+  pre_tasks:
+    - name: stop/disable all services
+      ansible.builtin.systemd:
+        name: ""
+        state: stopped
+        enabled: false
+      loop:
+        - ui.service
+        - control.service
+        - simulator.service
+        - mosquitto.service
+      loop_control:
+        loop_var: service
+  tasks:
+    - name: remove files/directories
+      ansible.builtin.file:
+        path: ""
+        state: absent
+      loop:
+        - /var/ui
+        - /var/control
+        - /var/simulator
+        - /etc/mosquitto/mosquitto.conf
+        - /etc/systemd/system/ui.service
+        - /etc/systemd/system/control.service
+        - /etc/systemd/system/simulator.service
+      loop_control:
+        loop_var: path
+    - name: remove packages
+      community.general.rpm_ostree_pkg:
+        name: ""
+        state: absent
+      notify: reboot_system
+      loop:
+        - npm
+        - nodejs-typescript
+      loop_control:
+        loop_var: package
+    - name: re-enable selinux
+      ansible.posix.selinux:
+        state: enforcing
+        policy: targeted
+    - name: close firewall port
+      ansible.posix.firewalld:
+        port: 1881/tcp
+        zone: public
+        permanent: true
+        state: disabled
+        immediate: true
+  handlers:
+    - name: reboot the system
+      ansible.builtin.reboot:
+        reboot_command: systemctl reboot
+        reboot_timeout: 300
+      listen:
+        - reboot_system

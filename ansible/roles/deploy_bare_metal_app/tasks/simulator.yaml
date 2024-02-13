@@ -1,0 +1,63 @@
+---
+
+- name: create a directory for the simulator
+  ansible.builtin.file:
+    path: /var/simulator
+    state: directory
+  register: simulator_directory_created
+
+- name: clone the code to the directory
+  ansible.builtin.git:
+    repo: https://github.com/jjaswanson4/process-demo-simulate.git
+    dest: /var/simulator
+  when:
+    - simulator_directory_created.changed
+
+- name: install npm out-of-band
+  community.general.rpm_ostree_pkg:
+    name: http://$(ip-or-hostname-from-student-page)/packages/npm-8.19.2-1.16.18.1.3.module+el8.7.0+17465+1a1abd74.x86_64.rpm
+  register: npm_installed
+
+- name: install typescript out-of-band
+  community.general.rpm_ostree_pkg:
+    name: http://$(ip-or-hostname-from-student-page)/packages/nodejs-typescript-4.1.3-4.fc36.noarch.rpm
+  register: typescript_installed
+
+- name: reboot if we installed packages
+  ansible.builtin.reboot:
+    reboot_command: systemctl reboot
+    reboot_timeout: 300
+  when:
+    - npm_installed.changed or
+      typescript_installed.changed
+
+- name: install the depedencies
+  community.general.npm:
+    path: /var/simulator
+
+- name: run tsc
+  ansible.builtin.shell:
+    cmd: tsc
+    chdir: /var/simulator
+    creates: /var/simulator/dist
+
+- name: push out systemd file
+  ansible.builtin.copy:
+    src: files/simulator.service
+    dest: /etc/systemd/system/simulator.service
+    owner: root
+    group: root
+    mode: '0644'
+  register: simulator_service_file
+
+- name: reload systemd if needed
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when:
+    - simulator_service_file.changed
+
+- name: ensure the service is enabled/started
+  ansible.builtin.systemd:
+    name: simulator.service
+    state: started
+    enabled: true

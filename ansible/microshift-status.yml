@@ -2,7 +2,8 @@
 - name: Deploy application on microshift
   hosts: all
   tasks:
-    - name: Restart service microshift service
-      service:
-        name: microshift
-        state: restarted
+    - name: MicroShiftサービスの状態をStartedであることを確認する
+      ansible.builtin.systemd:
+        name: microshift.service
+        state: started
+      become: yes

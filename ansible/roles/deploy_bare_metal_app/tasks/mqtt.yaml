@@ -1,0 +1,20 @@
+---
+
+- name: copy out our config file
+  ansible.builtin.copy:
+    src: files/mosquitto.conf
+    dest: /etc/mosquitto/mosquitto.conf
+  register: mqtt_config_updated
+
+- name: enable and start the service
+  ansible.builtin.systemd:
+    name: mosquitto.service
+    state: started
+    enabled: true
+
+- name: restart the service if config changed
+  ansible.builtin.systemd:
+    name: mosquitto.service
+    state: restarted
+  when:
+    - mqtt_config_updated.changed

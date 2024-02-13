@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Simulator service
+After=mosquitto.service
+
+[Service]
+WorkingDirectory=/var/simulator
+Environment=MQTT_URI=mqtt://localhost:1883
+ExecStart=/usr/bin/node dist/tank.js
+
+[Install]
+WantedBy=multi-user.target

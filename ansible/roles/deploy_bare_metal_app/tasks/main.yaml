@@ -1,0 +1,13 @@
+---
+
+- name: import mqtt tasks
+  ansible.builtin.import_tasks: mqtt.yml
+
+- name: import simulator tasks
+  ansible.builtin.import_tasks: simulator.yml
+
+- name: import control tasks
+  ansible.builtin.import_tasks: control.yml
+
+- name: import ui tasks
+  ansible.builtin.import_tasks: ui.yml

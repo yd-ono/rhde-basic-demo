@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Simulator service
+After=control.service
+
+[Service]
+WorkingDirectory=/var/ui
+Environment=PORT=1881
+ExecStart=/bin/npm start
+
+[Install]
+WantedBy=multi-user.target

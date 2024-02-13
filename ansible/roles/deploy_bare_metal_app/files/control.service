@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Control service
+After=simulator.service
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/var/control
+ExecStart=/bin/npm start
+
+[Install]
+WantedBy=multi-user.target

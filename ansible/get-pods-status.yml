@@ -1,11 +1,36 @@
 ---
-- name: Get Pods Status
-  hosts: all
-  gather_facts: true
+- name: Get a list of all pods from any namespace
+  hosts:
+    - all
+  module_defaults:
+    kubernetes.core.k8s:
+      kubeconfig: /tmp/kubeconfig
+      validate_certs: false
+  pre_tasks:
+    - name: slurp up kubeconfig
+      ansible.builtin.slurp:
+        path: /var/lib/microshift/resources/kubeadmin/kubeconfig
+      register: kubeconfig_raw
+      become: true
+    - name: create kubeconfig
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ (kubeconfig_raw['content'] | b64decode).replace('127.0.0.1', ansible_host) }}"
+        dest: /tmp/kubeconfig
+    - name: allow API access
+      ansible.posix.firewalld:
+        port: 6443/tcp
+        zone: public
+        state: enabled
+        immediate: true
+        permanent: true
+      become: true
   tasks:
-    - name: run oc get pods
-      command: oc --kubeconfig=/var/lib/microshift/resources/kubeadmin/kubeconfig get pods -A
-      register: result
-    - name: show result
+    - name: Get a list of all pods from any namespace
+      kubernetes.core.k8s_info:
+        kind: Pod
+      register: pod_list
+
+    - name: 実行結果
       debug:
-        msg: "{{ result.stdout }}"
+        msg: "{{ pod_list }}"
