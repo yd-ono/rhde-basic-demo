@@ -8,6 +8,7 @@
       validate_certs: false
     kubernetes.core.k8s_info:
       kubeconfig: /tmp/kubeconfig
+      validate_certs: false
   pre_tasks:
     - name: slurp up kubeconfig
       ansible.builtin.slurp:
