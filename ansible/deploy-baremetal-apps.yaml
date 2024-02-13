@@ -1,0 +1,6 @@
+---
+
+- name: deploy bare metal app to edge device
+  hosts: all
+  roles:
+    - ../roles/deploy_bare_metal_app

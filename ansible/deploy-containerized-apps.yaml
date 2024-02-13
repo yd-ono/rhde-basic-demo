@@ -1,0 +1,6 @@
+---
+
+- name: deploy our containerized application
+  hosts: all
+  roles:
+    - ../roles/deploy_containerized_app
