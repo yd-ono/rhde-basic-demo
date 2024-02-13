@@ -32,7 +32,7 @@
       block:
         - name: create namespace
           kubernetes.core.k8s:
-            name: process-control
+            name: dgw
             kind: Namespace
             state: present
         - name: apply definitions
@@ -40,11 +40,13 @@
             namespace: process-control
             definition: "{{ lookup('file', yaml_file) | from_yaml }}"
           loop:
-            - files/manifests/mqtt-service.yaml
-            - files/manifests/mqtt-deployment.yaml
-            - files/manifests/simulate-deployment.yaml
-            - files/manifests/control-deployment.yaml
-            - files/manifests/ui-service.yaml
-            - files/manifests/ui-deployment.yaml
+            - files/manifests/dgw/configmap.yaml
+            - files/manifests/dgw/secret.yaml
+            - files/manifests/dgw/mqtt-setting.yaml
+            - files/manifests/dgw/pvc.yaml
+            - files/manifests/dgw/sa.yaml
+            - files/manifests/dgw/service.yaml
+            - files/manifests/dgw/route.yaml
+            - files/manifests/dgw/deployment.yaml
           loop_control:
             loop_var: yaml_file

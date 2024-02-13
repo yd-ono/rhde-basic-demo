@@ -1,14 +1,14 @@
 ---
  - hosts: all
    tasks:
-   - name: register to the customer portal
+   - name: カスタマーポータルへの登録
      community.general.redhat_subscription:
        username: "{{ redhat_username }}"
        password: "{{ redhat_password }}"
        pool_ids: "{{ pool_id }}"
      become: true
 
-   - name: check if subman can configure repos
+   - name: subscription-managerの利用可能なリポジトリの確認
      ansible.builtin.shell:
        cmd: subscription-manager config | grep -i 'manage_repos = [0]'
      register: subman_repo_control
@@ -17,7 +17,7 @@
      failed_when: false
      become: true
 
-   - name: give subman repo control
+   - name: リポジトリの有効化
      ansible.builtin.shell:
        cmd: subscription-manager config --rhsm.manage_repos=1
      when:

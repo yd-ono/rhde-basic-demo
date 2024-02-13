@@ -1,14 +1,14 @@
 ---
 
-- name: upgrade RHDE
+- name: RHDEの更新
   hosts:
     - all
   tasks:
-    - name: upgrade RHDE
+    - name: rpm-ostreeを更新
       ansible.posix.rpm_ostree_upgrade:
       register: rhde_upgraded
   post_tasks:
-    - name: reboot device
+    - name: ostreeコンテンツが更新後に再起動を実施
       ansible.builtin.reboot:
         reboot_command: systemctl reboot
         reboot_timeout: 300

@@ -1,12 +1,41 @@
 ---
-- name: do initial device setup
+- name: OSの初期設定
   hosts: all
   tasks:
-    - name: set the system hostname
+    - name: ホスト名の設定
       ansible.builtin.hostname:
         name: "{{ inventory_hostname }}"
-    - name: insert line into /etc/hosts
+    - name: /etc/hosts登録
       ansible.builtin.lineinfile:
         path: /etc/hosts
         line: '{{ ansible_default_ipv4.address }} {{ inventory_hostname }} {{ inventory_hostname }}.lcl'
         insertafter: EOF
+
+- name: MicroShiftの設定変更
+  hosts:
+    - all
+  become: true
+  pre_tasks:
+    # - name: copy crio config over
+    #   ansible.builtin.copy:
+    #     src: files/conf/microshift.conf
+    #     dest: /etc/crio/crio.conf.d/microshift.conf
+    # - name: push out pull secret
+    #   ansible.builtin.copy:
+    #     content: ""
+    #     dest: /etc/crio/openshift-pull-secret
+    # - name: fix for https://github.com/cri-o/cri-o/issues/6197
+    #   ansible.builtin.lineinfile:
+    #     path: /etc/containers/policy.json
+    #     regexp: '^.*keyPaths.*'
+    #     line: '                    "keyPath": "/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release"'
+    - name: copy microshift config
+      ansible.builtin.copy:
+        src: files/conf/config.yaml
+        dest: /etc/microshift/config.yaml
+  tasks:
+    - name: restart microshift
+      ansible.builtin.systemd:
+        name: microshift
+        state: restarted
+        enabled: true

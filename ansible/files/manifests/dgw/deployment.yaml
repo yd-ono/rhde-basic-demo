@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dgw
+spec:
+  strategy: {}
+  selector:
+    matchLabels:
+      app: dgw
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dgw
+    spec:
+      containers:
+        - name: container
+          image: quay.io/yono/dgw:3.3.0-amd64
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: mqtt-setting
+          ports:
+            - containerPort: 80
+              protocol: TCP
+            - containerPort: 443
+              protocol: TCP
+          volumeMounts:
+          - mountPath: "/etc/dxpgateway"
+            name: pvc-dxpgateway
+          - mountPath: /mnt/sdcard
+            name: pvc-sdcard
+          - mountPath: /mnt/sdcard/DeviceGateway.lic
+            subPath: DeviceGateway.lic
+            name: license
+          - mountPath: /etc/dxpgateway/config/setting.dxg.tpl
+            subPath: setting.dxg.tpl
+            name: setting
+          securityContext:
+            privileged: true
+            # runAsUser: 1002
+            # runAsGroup: 1002
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+      volumes:
+      - name: pvc-dxpgateway
+        persistentVolumeClaim:
+          claimName: pvc-dxpgateway
+      - name: pvc-sdcard
+        persistentVolumeClaim:
+          claimName: pvc-sdcard
+      - name: license
+        secret:
+          secretName: dgw-license
+          readOnly: true
+          items:
+            - key: DeviceGateway.lic
+              path: DeviceGateway.lic
+      - name: setting
+        configMap:
+          name: dgw-settings
+          items:
+            - key: setting.dxg.tpl
+              path: setting.dxg.tpl
+            # - key: setting.dxg.tpl
+            #   path: setting.dxg.tpl
+              # mode: 0777
+      serviceAccount: dgw
+      serviceAccountName: dgw
