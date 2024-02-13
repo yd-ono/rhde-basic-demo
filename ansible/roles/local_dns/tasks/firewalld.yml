@@ -1,8 +1,0 @@
----
-
-- name: allow dns queries
-  ansible.posix.firewalld:
-    service: dns
-    permanent: true
-    immediate: true
-    state: enabled

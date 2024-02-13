@@ -1,7 +1,0 @@
----
-
-- name: enable baseos/appstream
-  community.general.rhsm_repository:
-    name: "{{ common_repos }}"
-    state: enabled
-  notify: clean_dnf

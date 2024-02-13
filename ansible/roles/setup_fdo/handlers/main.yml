@@ -1,8 +1,0 @@
----
-
-- name: restart FDO
-  ansible.builtin.systemd:
-    name: fdo-aio
-    state: restarted
-  listen:
-    - restart_fdo

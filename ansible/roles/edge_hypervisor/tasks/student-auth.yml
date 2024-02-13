@@ -1,9 +1,0 @@
----
-
-- name: allow student auth via password
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    line: 'PasswordAuthentication yes'
-    regexp: '#PasswordAuthentication yes'
-  notify:
-    - restart_sshd
