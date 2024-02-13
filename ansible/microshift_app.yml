@@ -6,13 +6,13 @@
       vars:
         microshift_image_pull_secret: "{{ lookup('file', '~/pull-secret.txt') }}"
         microshift_app_manifests:
-          - /microshift/argocd/kustomization.yaml
-          - /microshift/argocd/namespace.yaml
-          - /microshift/argocd/argocd-crd.yaml
-          - /microshift/argocd/argocd-clusterrolebinding.yaml
-          - /microshift/argocd/argocd-rolebinding.yaml
-          - /microshift/argocd/argocd-cluster.yaml
-          - /microshift/argocd/argocd-application.yaml
-          - /microshift/argocd/argocd-apps.yaml
+          - /ansible/argocd/kustomization.yaml
+          - /ansible/argocd/namespace.yaml
+          - /ansible/argocd/argocd-crd.yaml
+          - /ansible/argocd/argocd-clusterrolebinding.yaml
+          - /ansible/argocd/argocd-rolebinding.yaml
+          - /ansible/argocd/argocd-cluster.yaml
+          - /ansible/argocd/argocd-application.yaml
+          - /ansible/argocd/argocd-apps.yaml
       ansible.builtin.import_role:
         name: edge.microshift.app
