@@ -1,0 +1,5 @@
+---
+
+- name: debug repos
+  ansible.builtin.debug:
+    msg: "{{ builder_custom_repos }}"

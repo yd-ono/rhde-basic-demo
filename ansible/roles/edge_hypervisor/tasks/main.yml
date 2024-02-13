@@ -1,0 +1,27 @@
+---
+
+- name: Include become tasks
+  ansible.builtin.include_tasks:
+    file: "{{ _tasks_file }}"
+    apply:
+      become: true
+  loop:
+    - pre-flight.yml
+    - packages.yml
+    - kvm.yml
+    - virtual-networking.yml
+    - create-installer-iso.yml
+    - virtual-machines.yml
+    - cockpit.yml
+    - local-dns.yml
+  loop_control:
+    loop_var: _tasks_file
+
+- name: Include non-become tasks
+  ansible.builtin.include_tasks:
+    file: "{{ _tasks_file }}"
+  loop:
+    - aws-dns.yml
+    - reverse-proxy.yml
+  loop_control:
+    loop_var: _tasks_file 

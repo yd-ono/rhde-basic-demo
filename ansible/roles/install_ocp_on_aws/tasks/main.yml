@@ -1,0 +1,22 @@
+---
+
+- name: Install cluster
+  ansible.builtin.include_tasks:
+    file: "{{ tasks_file }}"
+  loop:
+    - pre-flight.yml
+    - setup-tooling.yml
+    - create-configs.yml
+    - run-install.yml
+  loop_control:
+    loop_var: tasks_file
+  when:
+    - teardown is not defined or
+      not teardown|bool
+
+- name: Teardown if requested
+  ansible.builtin.include_tasks:
+    file: teardown.yml
+  when:
+    - teardown is defined
+    - teardown|bool

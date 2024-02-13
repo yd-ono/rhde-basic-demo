@@ -1,0 +1,29 @@
+---
+
+aap_bundle_sha256_checksum: eb4573d15785d441782279ac7404d763e3905e7032f38d8bfa40bc75c68f9ea1
+
+provided_sha_value: "{{ aap_bundle_sha256_checksum }}"
+
+aap_dir: "/home/{{ ansible_user }}/aap_install"
+output_dir: "{{ playbook_dir }}/{{ ec2_name_prefix }}"
+
+# EE registry name used in installer and EE controller credential
+ee_registry_name: "registry.redhat.io"
+
+# List of execution environments to download during controller installation:
+ee_images:
+   - "{{ ee_registry_name }}/ansible-automation-platform-23/ee-29-rhel8:latest"
+   - "{{ ee_registry_name }}/ansible-automation-platform-23/ee-supported-rhel9:latest"
+   - "{{ ee_registry_name }}/ansible-automation-platform-23/ee-minimal-rhel9:latest"
+
+# Default EE that uses the registry credential (Default execution environment)
+ee_default_image: "{{ ee_registry_name }}/ansible-automation-platform-23/ee-supported-rhel9:latest"
+# Controller install command
+controller_install_command: "./setup.sh -e gpgcheck=0"
+
+nginx_http_port: 10080
+nginx_https_port: 10443
+
+_installation_collections:
+  - name: community.general
+    path: /root/.ansible/collections/ansible_collections/community/general

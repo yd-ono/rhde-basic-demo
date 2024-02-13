@@ -1,0 +1,96 @@
+---
+
+- name: import pre-flight tasks
+  ansible.builtin.import_tasks: pre-flight.yml
+  when:
+    - post_controller is not defined or not post_controller
+
+- name: include install tasks
+  when:
+    - install_gitea | bool and (post_controller is not defined or not post_controller)
+  block:
+
+    - name: include firewall tasks
+      ansible.builtin.include_tasks:
+        file: open-firewall-ports.yml
+
+    - name: include copy build info tasks
+      ansible.builtin.include_tasks:
+        file: copy-build-info.yml
+      loop_control:
+        loop_var: container
+      loop: "{{ podman_kube_specs[0].kube_file_content.spec.containers }}"
+
+    - name: include tasks to template out app.ini
+      ansible.builtin.include_tasks:
+        file: push-gitea-config.yml
+
+    - name: include tasks to build container
+      ansible.builtin.include_tasks:
+        file: build-container.yml
+      loop_control:
+        loop_var: container
+      loop: "{{ podman_kube_specs[0].kube_file_content.spec.containers }}"
+
+    - name: include kube spec template tasks
+      ansible.builtin.include_tasks:
+        file: push-kube-play.yml
+      loop_control:
+        loop_var: kube_spec
+      loop: "{{ podman_kube_specs }}"
+
+    - name: include podman kube play tasks
+      ansible.builtin.include_tasks:
+        file: podman-kube-play.yml
+      loop_control:
+        loop_var: kube_spec
+      loop: "{{ podman_kube_specs }}"
+
+
+- name: tasks to configure gitea
+  when:
+    - configure_gitea | bool and (post_controller is not defined or not post_controller)
+  block:
+    - name: include config/users/repos tasks
+      ansible.builtin.include_tasks:
+        file: "{{ tasks_file }}"
+      loop:
+        - initial-gitea-config.yml
+        - create-gitea-users.yml
+        - create-gitea-repos.yml
+      loop_control:
+        loop_var: tasks_file
+
+    - name: include tasks to populate repos
+      ansible.builtin.include_tasks:
+        file: populate-student-repos.yml
+      loop: "{{ range(1, (student_total + 1), 1)|list }}"
+      loop_control:
+        loop_var: student_number
+      when:
+        - workshop_or_demo is not defined or
+          demo_type is not defined or
+          demo_type == 'summit_connect_2023' or
+          workshop_or_demo == 'workshop' or
+          demo_type != 'sps_2023'
+
+    - name: include tasks to populate repos for specific demos
+      ansible.builtin.include_tasks:
+        file: populate-demo-repo.yml
+      when:
+        - workshop_or_demo is defined
+        - workshop_or_demo == 'demo'
+        - demo_type == 'sps_2023'
+
+- name: tasks to configure gitea after controller
+  when:
+    - configure_gitea | bool and post_controller is defined and post_controller
+  block:
+    - name: include config/users/repos tasks
+      ansible.builtin.include_tasks:
+        file: "{{ tasks_file }}"   
+      loop:
+        - create-gitea-webhooks.yml
+      loop_control:
+        loop_var: tasks_file
+  

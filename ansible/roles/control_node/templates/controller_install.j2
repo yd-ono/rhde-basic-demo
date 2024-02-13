@@ -1,0 +1,49 @@
+[automationcontroller]
+{{ inventory_hostname }}.local ansible_connection=local
+
+{% if run_in_aws is defined and run_in_aws %}
+[automationcontroller:vars]
+node_type=control 
+
+[execution_nodes]
+execution-node ansible_port=2022 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[execution_nodes:vars]
+peers=automationcontroller 
+node_type=execution
+
+{% endif %}
+
+[automationhub]
+
+[database]
+
+[servicescatalog_workers]
+
+[all:vars]
+admin_password='{{admin_password}}'
+
+pg_host=''
+pg_port=''
+
+pg_database='awx'
+pg_username='awx'
+pg_password='{{ admin_password }}'
+pg_sslmode='prefer'  # set to 'verify-full' for client-side enforced SSL
+
+gpgcheck='{{ gpgcheck | default(1)}}'
+ignore_preflight_errors = True
+
+registry_url='{{ ee_registry_name }}'
+registry_username='{{ redhat_username }}'
+registry_password='{{ redhat_password }}'
+
+nginx_http_port='{{ nginx_http_port }}'
+nginx_https_port='{{ nginx_https_port }}'
+
+
+
+
+
+
+

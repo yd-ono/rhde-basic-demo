@@ -1,0 +1,13 @@
+---
+
+- name: ensure cockpit-machines is installed
+  ansible.builtin.dnf:
+    name:
+      - cockpit
+      - cockpit-machines
+
+- name: Ensure socket is started
+  ansible.builtin.systemd:
+    name: cockpit.socket
+    state: started
+    enabled: true

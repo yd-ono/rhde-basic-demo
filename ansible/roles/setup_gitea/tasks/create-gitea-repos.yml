@@ -1,0 +1,68 @@
+---
+
+- name: create repos
+  ansible.builtin.uri:
+    url: "{{ _gitea_full_host }}/api/v1/admin/users/student{{ student_number }}/repos"
+    validate_certs: false
+    user: "{{ _gitea_admin_user }}"
+    password: '{{ admin_password }}'
+    force_basic_auth: true
+    body_format: json
+    method: POST
+    body:
+      name: "{{ repo_name }}"
+      private: true
+    status_code:
+      - 201
+      - 409
+  loop: "{{ range(1, (student_total + 1), 1)|list }}"
+  loop_control:
+    loop_var: student_number
+  when:
+    - workshop_or_demo == 'workshop' or
+      demo_type == 'summit_connect_2023'
+  #delegate_to: localhost
+
+
+- name: create additional repos
+  ansible.builtin.uri:
+    url: "{{ _gitea_full_host }}/api/v1/admin/users/student{{ item[0] }}/repos"
+    validate_certs: false
+    user: "{{ _gitea_admin_user }}"
+    password: '{{ admin_password }}'
+    force_basic_auth: true
+    body_format: json
+    method: POST
+    body:
+      name: "{{ item[1].name }}"
+      private: "{{ item[1].private | default('true') }}"
+    status_code:
+      - 201
+      - 409
+  with_nested: 
+    - "{{ range(1, (student_total + 1), 1)|list }}"
+    - "{{ additional_repos }}"
+  #delegate_to: localhost
+  when:
+    - additional_repos is defined
+    - workshop_or_demo == 'workshop'
+
+- name: Create repo for demo
+  ansible.builtin.uri:
+    url: "{{ _gitea_full_host }}/api/v1/admin/users/{{ gitea_demo_user }}/repos"
+    validate_certs: false
+    user: "{{ _gitea_admin_user }}"
+    password: '{{ admin_password }}'
+    force_basic_auth: true
+    body_format: json
+    method: POST
+    body:
+      name: "{{ gitea_repo_name }}"
+      private: true
+    status_code:
+      - 201
+      - 409
+  when:
+    - workshop_or_demo is defined
+    - workshop_or_demo == 'demo'
+    - demo_type != 'summit_connect_2023'

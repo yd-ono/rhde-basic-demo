@@ -1,0 +1,32 @@
+---
+
+- name: Install base packages
+  ansible.builtin.dnf:
+    name:
+      - vim
+      - git
+      - wget
+      - nano
+      - sshpass
+      - ansible-core
+      - jq
+      - net-tools
+      - podman
+      - python3-pip
+    state: present
+  register: dnf_check
+  until: dnf_check is not failed
+  retries: 4
+  delay: 5
+
+- name: install community collection
+  ansible.builtin.shell:
+    cmd: "ansible-galaxy collection install {{ collection.name }} --force-with-deps"
+  args:
+    creates: "{{ collection.path }}"
+  register: controlnode
+  loop: "{{ _installation_collections }}"
+  loop_control:
+    loop_var: collection
+  until: controlnode is not failed
+  retries: 5

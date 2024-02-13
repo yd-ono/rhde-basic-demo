@@ -1,0 +1,20 @@
+---
+
+- name: run these tasks as root
+  become: true
+  block:
+    - name: allow non-root to bind to low ports
+      ansible.builtin.lineinfile:
+        line: net.ipv4.ip_unprivileged_port_start=10
+        path: /etc/sysctl.conf
+      notify:
+        - sysctl_reload
+  
+    - name: allow cgroup config modification
+      ansible.posix.seboolean:
+        name: container_manage_cgroup
+        state: true
+        persistent: true
+    
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers

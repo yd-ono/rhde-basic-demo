@@ -1,0 +1,64 @@
+---
+
+- name: aws specific vars
+  when:
+    - "'aws' in group_names"
+  block:
+    - name: set ssh key path
+      ansible.builtin.set_fact:
+        ssh_key_path: "{{ playbook_dir }}/{{ ec2_name_prefix }}.{{ workshop_dns_zone }}/ssh-key.pem"
+    - name: set vars for aws controller
+      ansible.builtin.set_fact:
+        edge_manager_host: "{{ route53_domains.controller.domain }}"
+        edge_manager_credential_inputs:
+          username: "{{ ansible_user }}"
+          ssh_key_data: "{{ lookup('file', ssh_key_path) }}"
+        source_control_hostname: "{{ route53_domains.gitea.domain }}"
+
+- name: local specific vars
+  when:
+    - "'local' in group_names"
+  block:
+    - name: set vars for local controller
+      ansible.builtin.set_fact:
+        edge_manager_host: "{{ ansible_host }}"
+        edge_manager_credential_inputs:
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          become_password: "{{ ansible_become_password }}"        
+        source_control_hostname: "{{ ansible_host }}"
+
+- name: load license block
+  block:
+    - name: check for base64 variable first
+      copy:
+        dest: '{{ playbook_dir }}/manifest.zip'
+        content: '{{ base64_manifest | b64decode }}'
+      delegate_to: localhost
+      become: false
+      when: base64_manifest is defined
+    - name: unable to load base64_manifest
+      debug:
+        msg: 'No base64_manifest variable found, trying to open manifest.zip'
+      when: base64_manifest is undefined
+    - name: Load manifest into variable
+      local_action:
+        module: slurp
+        src: "{{ playbook_dir }}/manifest.zip"
+      register: manifest_file
+      become: false
+
+
+- name: push license
+  ansible.builtin.include_role:
+    name: redhat_cop.controller_configuration.license
+  vars:
+    controller_license:
+      manifest_content: "{{ manifest_file.content }}"
+
+- name: I have no idea why the installer stopped doing this
+  ansible.builtin.shell:
+    cmd: podman exec -it automation-controller-web awx-manage register_default_execution_environments --registry-url https://registry.redhat.io --registry-username '{{ redhat_username }}' --registry-password '{{ redhat_password }}' --verify-ssl true
+  when:
+    - controller_install_method is defined
+    - controller_install_method == 'podman'

@@ -1,0 +1,12 @@
+---
+
+- name: run common role
+  hosts:
+    - edge_management
+    - hypervisors
+    - attendance
+    - edge_local_management
+  become: true
+  tasks:
+    - include_role:
+        name: ../roles/common

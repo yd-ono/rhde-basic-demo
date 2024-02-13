@@ -1,0 +1,27 @@
+---
+
+- name: configure credentials
+  ansible.builtin.include_role:
+    name: redhat_cop.controller_configuration.credentials
+
+- name: configure projects
+  ansible.builtin.include_role:
+    name: redhat_cop.controller_configuration.projects
+
+- name: configure hosts
+  ansible.builtin.include_role:
+    name: redhat_cop.controller_configuration.hosts
+
+- name: configure notifications
+  ansible.builtin.include_role:
+    name: redhat_cop.controller_configuration.notification_templates
+  when: slack_app_token is defined
+
+- name: configure job templates
+  ansible.builtin.include_role:
+    name: redhat_cop.controller_configuration.job_templates
+
+- name: configure workflows
+  ansible.builtin.include_role:
+    name: redhat_cop.controller_configuration.workflow_job_templates
+

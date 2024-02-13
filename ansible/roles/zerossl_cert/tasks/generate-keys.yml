@@ -1,0 +1,27 @@
+---
+
+- name: generate account key
+  community.crypto.openssl_privatekey:
+    path: "{{ _cert_dir }}/{{ domain_name_short }}.account.key"
+    owner: "{{ _cert_owner }}"
+    group: "{{ _cert_group }}"
+
+- name: generate private key
+  community.crypto.openssl_privatekey:
+    path: "{{ _cert_dir }}/{{ domain_name_short }}.pem"
+    owner: "{{ _cert_owner }}"
+    group: "{{ _cert_group }}"
+
+- name: set to wildcard if requested
+  ansible.builtin.set_fact:
+    common_name: "*.{{ domain_name }}"
+  when:
+    - wildcard is defined
+    - wildcard
+
+- name: generate csr
+  community.crypto.openssl_csr:
+    path: "{{ _cert_dir }}/{{ domain_name_short }}.csr"
+    privatekey_path: "{{ _cert_dir }}/{{ domain_name_short }}.pem"
+    common_name: "{{ common_name | default(domain_name) }}"
+    subject_alt_name: "{{ subject_alternate_names | default(omit) }}"

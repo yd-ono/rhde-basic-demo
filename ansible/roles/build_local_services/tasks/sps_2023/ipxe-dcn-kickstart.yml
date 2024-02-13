@@ -1,0 +1,11 @@
+---
+
+- name: create dir for kickstarts
+  ansible.builtin.file:
+    path: "{{ build_dir }}/ipxe/kickstarts"
+    state: directory
+
+- name: template out dcn kickstart
+  ansible.builtin.template:
+    src: "templates/{{ demo_type }}/ipxe-dcn-kickstart.ks.j2"
+    dest: "{{ build_dir }}/ipxe/kickstarts/dcn.ks"

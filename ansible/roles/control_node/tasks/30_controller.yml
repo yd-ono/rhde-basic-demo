@@ -1,0 +1,114 @@
+---
+- name: template inventory file for Ansible Controller Install
+  template:
+    src: "controller_install.j2"
+    dest: "{{ aap_dir }}/inventory"
+  when: create_cluster is not defined or not create_cluster|bool
+
+- name: template inventory file for Automation Controller Install cluster
+  template:
+    src: tower_cluster_install.j2
+    dest: "{{ aap_dir }}/inventory"
+  when: create_cluster is defined and create_cluster|bool
+
+- name: allow bind to http port
+  community.general.seport:
+    ports: "{{ nginx_http_port }}"
+    proto: tcp
+    setype: http_port_t
+    state: present
+
+- name: allow bind to https port
+  community.general.seport:
+    ports: "{{ nginx_https_port }}"
+    proto: tcp
+    setype: http_port_t
+    state: present
+
+- name: run the Automation Controller installer
+  shell: "{{ controller_install_command }}"
+  args:
+    chdir: "{{ aap_dir }}"
+  async: 2500
+  poll: 15
+
+- name: wait for Automation Controller to be up
+  uri:
+    url: https://localhost:{{ nginx_https_port | default('443') }}/api/v2/ping/
+    method: GET
+    user: admin
+    password: "{{admin_password}}"
+    validate_certs: false
+  register: check2
+  # wait <= 10 minutes for a satisfactory result, which is
+  #   - something is returned
+  #   - instance_groups[*].capacity > 0
+  #   - instances[*].capacity > 0
+  # if capacity is 0, execution later fails with a seemingly unrelated urllib TLS version error
+  # we only check instance{s,groups}[0] because we're not clustering
+  until: check2.json is defined and check2.json.instances[0].capacity > 0 and check2.json.instance_groups[0].capacity > 0
+  retries: 60
+  delay: 10
+
+- name: Display /api/v2/ping results
+  debug:
+    msg: '{{ check2.json }}'
+
+- name: set pip executable | RHEL8
+  ansible.builtin.set_fact:
+    pip_executable: /usr/bin/pip3.6
+  when:
+    - ansible_distribution_major_version|int == 8
+
+- name: set pip executable | RHEL9
+  ansible.builtin.set_fact:
+    pip_executable: /usr/bin/pip
+  when:
+    - ansible_distribution_major_version|int == 9 
+
+- name: ensure pip is upgraded
+  ansible.builtin.pip:
+    name:
+      - pip
+    state: latest
+
+# Certbot dependancy / acme, needs later version of requests library than task above^^
+- name: install ansible-tower-cli and requests >2.14
+  become: true
+  ansible.builtin.pip:
+    name:
+      - ansible-tower-cli
+      - "requests==2.14.2"
+    executable: "{{ pip_executable }}"
+    state: latest
+
+- name: load license block
+  block:
+    - name: check for base64 variable first
+      copy:
+        dest: '{{ playbook_dir }}/manifest.zip'
+        content: '{{ base64_manifest | b64decode }}'
+      delegate_to: localhost
+      become: false
+      when: base64_manifest is defined
+    - name: unable to load base64_manifest
+      debug:
+        msg: 'No base64_manifest variable found, trying to open manifest.zip'
+      when: base64_manifest is undefined
+    - name: Load manifest into variable
+      local_action:
+        module: slurp
+        src: "{{ playbook_dir }}/manifest.zip"
+      register: manifest_file
+      become: false
+
+- name: Post manifest file
+  uri:
+    url: https://{{ ansible_host }}:{{ nginx_https_port | default('443') }}/api/v2/config/
+    method: POST
+    user: admin
+    password: "{{admin_password}}"
+    body: '{ "eula_accepted": true, "manifest": "{{ manifest_file.content }}" }'
+    body_format: json
+    validate_certs: false
+    force_basic_auth: true
