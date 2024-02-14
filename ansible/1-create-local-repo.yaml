@@ -1,0 +1,46 @@
+---
+ - hosts: all
+   vars:
+    #  microshift_local: "/var/repo/microshift-local"
+     rhel_version: 9
+     microshift_version: 4.14
+     image_source_file_path:
+       - files/conf/image-sources/microshift-local.toml
+       - files/conf/image-sources/epel.toml
+       - files/conf/image-sources/rhsi.toml
+     image_source_filename:
+       - microshift-local.toml
+       - epel.toml
+       - rhsi.toml
+   tasks:
+   - name: MicroShiftとFast Datapathのパッケージをシンクする先のディレクトリを作成する
+     ansible.builtin.file:
+       path: "{{ microshift_local }}"
+       state: directory
+       mode: '0755'
+     become: true
+
+   - name: ローカルのMicroShiftリポジトリへシンク
+     shell: reposync --arch=$(uname -i) --arch=noarch --gpgcheck --download-path "{{ microshift_local }}" --repo=rhocp-{{ microshift_version }}-for-rhel-{{ rhel_version }}-x86_64-rpms --repo=fast-datapath-for-rhel-{{ rhel_version }}-x86_64-rpms
+     become: true
+
+   - name: リポジトリ内のCoreOSパッケージの削除
+     shell: find "{{ microshift_local }}" -name \*coreos\* -print -exec rm -f {} \;
+     become: true
+
+   - name: リポジトリの作成
+     shell: createrepo "{{ microshift_local }}"
+     become: true
+
+   - name: イメージソースのコピー
+     ansible.builtin.template:
+       src: "{{ item }}"
+       dest: "{{ microshift_local }}/"
+       with_item:
+         - "{{ image_source_file_path }}"
+
+   - name: image-builderへイメージソースを登録
+     shell: composer-cli sources add "{{ microshift_local }}/{{ item }}"
+     become: true
+     with_item:
+       - "{{ image_source_filename }}"

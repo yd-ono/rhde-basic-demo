@@ -1,0 +1,69 @@
+---
+ - hosts: all
+   vars:
+     blueprints_file_path: "files/conf/blueprints/rhde-microshift-v1.0.0.toml"
+     blueprints_filename: "rhde-microshift-v1.0.0.toml"
+     blueprint_name: "rhde-1.0.0"
+   tasks:
+   - name: Creating MicroShift Toml file
+     copy:
+       src: "{{ item }}"
+       dest: "{{ microshift_local }}/rhde-microshift.toml"
+     become: true
+     with_item:
+       - "{{ blueprints_file_path }}"
+
+   - name: Push blueprint to composer
+     shell: composer-cli blueprints push "{{ microshift_local }}/{{ blueprints_filename }}"
+     become: true
+
+   - name: Start compose of blueprint image
+     shell: composer-cli compose start-ostree {{ blueprint_name }} edge-commit| cut -f2 -d" "
+     register: compose_uuid
+     become: true
+
+   - set_fact:
+       compose_uuid={{ compose_uuid.stdout }}
+
+   - name: Print UUID
+     debug:
+       msg: "UUID: {{ compose_uuid }}"
+
+   - name: Check for compose to be completed
+     shell: composer-cli compose status | grep "{{ compose_uuid }}" | awk {'print $2'}
+     register: result
+     become: true
+
+   - set_fact:
+       result={{ result.stdout }}
+
+   - name: Print result
+     debug:
+       msg: "UUID: {{ result }}"
+
+   - name: Check for compose to be completed
+     shell: composer-cli compose status | grep "{{ compose_uuid }}" | awk {'print $2'}
+     register: result
+     until: '"FINISHED" in result.stdout'
+     retries: 24
+     delay: 300
+     become: true
+
+   - name: Create ostree framework directory
+     ansible.builtin.file:
+       path: "{{ microshift_local }}/generate-iso/ostree"
+       state: directory
+       mode: '0755'
+     become: true
+
+   - name: Download composed image tar file
+     shell: composer-cli compose image "{{ compose_uuid }}"
+     register: compose_image
+     become: true
+
+   - set_fact:
+       compose_image={{ compose_image.stdout }}
+
+   - name: tarballを解凍する
+     shell: tar -xf {{ compose_uuid }}-commit.tar -C "{{ microshift_local }}/generate-iso/ostree"
+     become: true

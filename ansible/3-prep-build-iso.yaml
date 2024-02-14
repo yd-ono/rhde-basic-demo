@@ -1,0 +1,25 @@
+---
+ - hosts: all
+   vars:
+     files: 
+       - "files/scripts/recook-online.sh"
+       - "files/scripts/recook-online.sh"
+       - "files/scripts/recook-online.sh"
+   tasks:
+   - name: Creating isolinux.cfg file
+     copy:
+       dest: "{{ microshift_local }}/generate-iso/isolinux.cfg"
+       src: "{{ isolinux_file_path }}"
+     become: true
+
+   - name: Change file ownership, group and permissions
+     ansible.builtin.file:
+       path: "{{ microshift_local }}/generate-iso/recook.sh"
+       owner: root
+       group: root
+       mode: '0755'
+     become: true
+
+   - name: Grab RHEL ISO From HTTP Server
+     shell: curl "{{ image_source }}/{{ image_name }}" -o "{{ microshift_local }}/generate-iso/{{ image_name }}"
+     become: true
