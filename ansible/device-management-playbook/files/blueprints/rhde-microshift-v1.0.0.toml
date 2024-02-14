@@ -1,0 +1,100 @@
+name = "rhde-1.0.0"
+description = "RHDE Basic Blueprints"
+version = "1.0.0"
+modules = []
+groups = []
+
+[[packages]]
+name = "subscription-manager"
+version = "*"
+
+[[packages]]
+name = "cronie"
+version = "*"
+
+[[packages]]
+name = "skupper-cli"
+version = "*"
+
+[[packages]]
+name = "cronie-anacron"
+version = "*"
+
+[[packages]]
+name = "python3-pip"
+version = "*"
+
+[[packages]]
+name = "python3-kubernetes"
+version = "*"
+
+[[packages]]
+name = "subscription-manager"
+version = "*"
+
+[[packages]]
+name = "NetworkManager-wifi"
+version = "*"
+
+[[packages]]
+name = "ansible-core"
+version = "*"
+
+[[packages]]
+name = "ostree"
+version = "*"
+
+[[packages]]
+name = "rpm-ostree"
+version = "*"
+
+[[packages]]
+name = "avahi"
+version = "*"
+
+[[packages]]
+name = "git"
+version = "*"
+
+[[packages]]
+name = "iputils"
+version = "*"
+
+[[packages]]
+name = "bind-utils"
+version = "*"
+
+[[packages]]
+name = "net-tools"
+version = "*"
+
+[[packages]]
+name = "iotop"
+version = "*"
+
+[[packages]]
+name = "redhat-release"
+version = "*"
+
+[customizations]
+hostname = "microshift-node"
+
+[customizations.services]
+enabled = ["crio", "microshift"]
+hostname = "microshift-node"
+
+[customizations.firewall]
+ports = ["22:tcp", "80:tcp", "443:tcp", "6443:tcp", "5353:udp"]
+
+[[customizations.sshkey]]
+user = "root"
+key = "<REPLACE_YOUR_SSH_PUB_KEY>"
+
+[[customizations.user]]
+name = "admin"
+description = "Admin user"
+password = '<password hash obatained with: python3 -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())'       >'
+key = "<REPLACE_YOUR_SSH_PUB_KEY>"
+home = "/home/admin/"
+shell = "/usr/bin/bash"
+groups = ["users", "wheel"]
