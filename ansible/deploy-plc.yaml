@@ -32,7 +32,7 @@
       block:
         - name: create namespace
           kubernetes.core.k8s:
-            name: dgw
+            name: plc
             kind: Namespace
             state: present
         - name: apply definitions
