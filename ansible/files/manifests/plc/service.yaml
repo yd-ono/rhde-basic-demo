@@ -1,0 +1,20 @@
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+    skupper.io/address: plc-proxy
+    skupper.io/port: '8080'
+    skupper.io/proxy: tcp
+  name: plc
+  labels:
+    app: plc
+spec:
+  type: NodePort
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 32880
+  selector:
+    app: plc

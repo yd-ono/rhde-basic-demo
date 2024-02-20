@@ -1,0 +1,15 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: plc
+  labels:
+    app: plc
+spec:
+  # host: auto determined - no need to provide host name
+  to:
+    kind: Service
+    name: plc
+    weight: 100
+  port:
+    targetPort: 8080-tcp
+  wildcardPolicy: None

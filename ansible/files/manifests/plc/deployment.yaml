@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plc
+spec:
+  strategy: {}
+  selector:
+    matchLabels:
+      app: plc
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dgw
+    spec:
+      containers:
+        - name: container
+          image: quay.io/yono/openplcv3:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+          - mountPath: "/persistent"
+            name: plc-persistent
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+      volumes:
+      - name: plc-persistent
+        persistentVolumeClaim:
+          claimName: plc-persistent
+      serviceAccount: plc
+      serviceAccountName: plc
