@@ -35,12 +35,22 @@
             name: dgw
             kind: Namespace
             state: present
+        - name: patched namespace
+          kubernetes.core.k8s:
+            name: dgw
+            kind: Namespace
+            state: patched
+            definition:
+              metadata:
+                labels:
+                  pod-security.kubernetes.io/enforce: privileged
+                  pod-security.kubernetes.io/audit: privileged
+                  pod-security.kubernetes.io/warn: privileged
         - name: apply definitions
           kubernetes.core.k8s:
             namespace: dgw
             definition: "{{ lookup('file', yaml_file) | from_yaml }}"
           loop:
-            - files/manifests/dgw/namespace.yaml
             - files/manifests/dgw/configmap.yaml
             - files/manifests/dgw/secret.yaml
             - files/manifests/dgw/mqtt-setting.yaml
