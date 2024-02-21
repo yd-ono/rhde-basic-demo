@@ -40,6 +40,7 @@
             namespace: dgw
             definition: "{{ lookup('file', yaml_file) | from_yaml }}"
           loop:
+            - files/manifests/dgw/namespace.yaml
             - files/manifests/dgw/configmap.yaml
             - files/manifests/dgw/secret.yaml
             - files/manifests/dgw/mqtt-setting.yaml
