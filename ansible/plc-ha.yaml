@@ -40,10 +40,14 @@
       register: container_status
       ignore_errors: yes
 
-    - set_fact:
-        ping_results: "{{ ping_result.results | map(attribute='ansible_host') | zip(ping_result.results | map(attribute='ping')) | list }}"
-        container_status: "{{ container_status.results | map(attribute='ansible_host') | zip([item.json | json_query('items[*].status.phase') | first | default('Not Found')]) | list }}"
-      loop: "{{ container_status.results }}"
+    - name: output
+      debug:
+        msg: container_status
+
+    # - set_fact:
+    #     ping_results: "{{ ping_result.results | map(attribute='ansible_host') | zip(ping_result.results | map(attribute='ping')) | list }}"
+    #     container_status: "{{ container_status.results | map(attribute='ansible_host') | zip([item.json | json_query('items[*].status.phase') | first | default('Not Found')]) | list }}"
+    #   loop: "{{ container_status.results }}"
 
 # - name: Start PLC container if not running
 #   hosts: localhost

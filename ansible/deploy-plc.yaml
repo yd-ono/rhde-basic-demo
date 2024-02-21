@@ -1,10 +1,16 @@
 ---
-
-- name: deploy application to k8s
+- name: PLCをデプロイメント(デバイスグループ内に常時1台起動)
   hosts:
     - all
+  vars:
+    namespace: plc
+    appname: plc
+  ignore_unreachable: yes
   module_defaults:
     kubernetes.core.k8s:
+      kubeconfig: /tmp/kubeconfig
+      validate_certs: false
+    kubernetes.core.k8s_info:
       kubeconfig: /tmp/kubeconfig
       validate_certs: false
   pre_tasks:
@@ -14,10 +20,15 @@
       register: kubeconfig_raw
       become: true
     - name: create kubeconfig
-      delegate_to: localhost
-      ansible.builtin.copy:
-        content: "{{ (kubeconfig_raw['content'] | b64decode).replace('localhost', ansible_host) }}"
-        dest: /tmp/kubeconfig
+      block:
+      - name: 'kubeconfig内のkube-apiのエンドポイントを修正(localhost -> ansible_hostのIPアドレス)'
+        delegate_to: localhost
+        ansible.builtin.copy:
+          content: "{{ (kubeconfig_raw['content'] | b64decode).replace('localhost', ansible_host) }}"
+          dest: /tmp/kubeconfig
+      rescue:
+        - debug:
+            msg: 'OS停止中のホストは処理をスキップする。'
     - name: allow API access
       ansible.posix.firewalld:
         port: 6443/tcp
@@ -26,24 +37,124 @@
         immediate: true
         permanent: true
       become: true
+
   tasks:
-    - name: make calls from localhost
+    - name: localhostから実行
       delegate_to: localhost
       block:
-        - name: create namespace
+
+        - name: イベントリからホストのリストを作成
+          set_fact:
+            inventory_list: "{{ hostvars | dict2items | map(attribute='value') | map(attribute='ansible_host') | zip(ansible_play_hosts_all) | list }}"
+
+        - name: リストを辞書へ変換
+          set_fact:
+            inventory_dict: "{{ dict(inventory_list) }}"
+
+        - debug: var=inventory_dict
+
+        - name: PLC Podの起動状態を確認
+          kubernetes.core.k8s_info:
+            kind: Pod
+            namespace: "{{ namespace }}"
+            label_selectors:
+            - app = "{{ appname }}"
+          register: container_status
+
+        - debug: var=container_status
+
+        - name: Podが起動するhostIPとPodのstatusのkey/valueペアを作成
+          set_fact:
+            container_status: >-
+              {%- set tmpdict = {} -%}
+              {%- for i in range(item|length) -%}
+              {%-   set _ = tmpdict.update({item.status.hostIP: item.status.phase}) -%}
+              {%- endfor -%}
+              {{ tmpdict }}
+          with_items: "{{ container_status | json_query('resources[*]') }}"
+
+        - debug: var=container_status
+
+        - name: 辞書を更新
+          set_fact:
+            inventory_dict: "{{ inventory_dict | combine(container_status, recursive=true)}}"
+
+        - debug: var=inventory_dict
+
+        - name: 不要なkeyが存在する項目を除外
+          set_fact:
+            inventory_dict: "{{ inventory_dict | dict2items | rejectattr('key', 'in', ['api_found', 'changed', 'failed', 'resources']) | map(attribute='value') | zip(inventory_dict | dict2items | map(attribute='key')) | list }}"
+
+        - name: リスト再度辞書化
+          set_fact:
+            inventory_dict: "{{ dict(inventory_dict) }}"
+
+        - debug: var=inventory_dict
+
+        - name: 辞書のkeyとvalueを入れ替える
+          set_fact:
+            inverted_inventory_dict: "{{ inventory_dict | dict2items | map(attribute='value') | zip(inventory_dict | dict2items | map(attribute='key')) | list }}"
+
+        - debug: var=inverted_inventory_dict
+
+        - name: イベントリ情報の辞書化
+          set_fact:
+            inverted_inventory_dict: "{{ dict(inverted_inventory_dict) }}"
+
+        - debug: var=inverted_inventory_dict
+
+        - name: PLCコンテナが1台も起動していない場合にホストリストの先頭ホストを選択
+          set_fact:
+            host_to_start_container: "{{ inventory_list[0] }}"
+          when: inverted_inventory_dict.Running is not defined
+        - debug: var=host_to_start_container
+
+        - name: Namespace作成
           kubernetes.core.k8s:
-            name: plc
+            name: "{{ namespace }}"
             kind: Namespace
             state: present
-        - name: apply definitions
+            definition:
+              metadata:
+                labels:
+                  pod-security.kubernetes.io/enforce: privileged
+                  pod-security.kubernetes.io/audit: privileged
+                  pod-security.kubernetes.io/warn: privileged
+
+        - name: "{{ appname }} コンテナのデプロイメント"
           kubernetes.core.k8s:
-            namespace: process-control
+            namespace: "{{ namespace }}"
+            state: present
             definition: "{{ lookup('file', yaml_file) | from_yaml }}"
           loop:
-            - files/manifests/plc/pvc.yaml
-            - files/manifests/plc/sa.yaml
-            - files/manifests/plc/service.yaml
-            - files/manifests/plc/route.yaml
-            - files/manifests/plc/deployment.yaml
+            - files/manifests/{{appname}}/sa.yaml
+            - files/manifests/{{appname}}/clusterrole.yaml
+            - files/manifests/{{appname}}/rolebinding.yaml
+            - files/manifests/{{appname}}/service.yaml
+            - files/manifests/{{appname}}/route.yaml
+            - files/manifests/{{appname}}/deployment.yaml
           loop_control:
             loop_var: yaml_file
+
+        - name: Podのステータスを確認
+          kubernetes.core.k8s_info:
+            kind: Pod
+            namespace: "{{namespace}}"
+            label_selectors:
+            - app = {{ appname }}
+          register: pod_list
+
+        - name: Pod情報の出力
+          debug:
+            msg: |
+                "{{ pod_list | json_query('resources[*].metadata.name')}} is {{ pod_list | json_query('resources[*].status.phase')}}"
+
+        - name: Routeの状態を確認
+          kubernetes.core.k8s_info:
+            kind: Route
+            name: "{{ appname }}"
+            namespace: dgw
+          register: route_list
+        - name: output Route info
+          debug:
+            msg: "Check Access: {{ route_list | json_query('resources[*].status.ingress[*].host')}}"
