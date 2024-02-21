@@ -2,6 +2,8 @@
 - name: MicroShiftのシステムPodの正常性確認手順
   hosts:
     - all
+  gather_facts: no
+  ignore_unreachable: yes
   module_defaults:
     kubernetes.core.k8s:
       kubeconfig: /tmp/kubeconfig

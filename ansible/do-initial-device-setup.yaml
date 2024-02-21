@@ -1,6 +1,8 @@
 ---
 - name: OSの初期設定
   hosts: all
+  gather_facts: no
+  ignore_unreachable: yes
   tasks:
     - name: ホスト名の設定
       ansible.builtin.hostname:
