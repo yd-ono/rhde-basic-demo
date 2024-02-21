@@ -43,8 +43,11 @@
             - files/manifests/dgw/configmap.yaml
             - files/manifests/dgw/secret.yaml
             - files/manifests/dgw/mqtt-setting.yaml
-            - files/manifests/dgw/pvc.yaml
+            - files/manifests/dgw/pvc-sdcard.yaml
+            - files/manifests/dgw/pvc-dxpgateway.yaml
             - files/manifests/dgw/sa.yaml
+            - files/manifests/dgw/clusterrole.yaml
+            - files/manifests/dgw/clusterrolebinding.yaml
             - files/manifests/dgw/service.yaml
             - files/manifests/dgw/route.yaml
             - files/manifests/dgw/deployment.yaml
