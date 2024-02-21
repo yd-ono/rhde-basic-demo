@@ -7,11 +7,12 @@
       ansible.builtin.hostname:
         name: "{{ inventory_hostname }}"
     - name: /etc/hosts登録
+      ignore_unreachable: yes
       ansible.builtin.lineinfile:
         path: /etc/hosts
         line: '{{ ansible_default_ipv4.address }} {{ inventory_hostname }} {{ inventory_hostname }}.lcl'
         insertafter: EOF
-        ignore_unreachable: yes
+
 
 - name: MicroShiftの設定変更
   hosts:
