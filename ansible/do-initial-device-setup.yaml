@@ -7,16 +7,20 @@
       ansible.builtin.hostname:
         name: "{{ inventory_hostname }}"
     - name: /etc/hosts登録
-      ignore_unreachable: yes
-      ansible.builtin.lineinfile:
-        path: /etc/hosts
-        line: '{{ ansible_default_ipv4.address }} {{ inventory_hostname }} {{ inventory_hostname }}.lcl'
-        insertafter: EOF
-
+      block:
+        - name: 'ansible_default_ipv4を取得して/etc/hostsへ反映'
+          ansible.builtin.lineinfile:
+            path: /etc/hosts
+            line: '{{ ansible_default_ipv4.address }} {{ inventory_hostname }} {{ inventory_hostname }}.lcl'
+            insertafter: EOF
+      rescue:
+        - debug:
+            msg: 'OS停止中のホストは無視する。'
 
 - name: MicroShiftの設定変更
   hosts:
     - all
+  ignore_unreachable: yes
   become: true
   pre_tasks:
     # - name: copy crio config over
