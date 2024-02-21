@@ -1,7 +1,6 @@
 ---
 - name: MicroShiftサービスの正常性確認手順
   hosts: all
-  gather_facts: no
   ignore_unreachable: yes
   tasks:
     - name: MicroShiftサービスの状態を起動状態にする

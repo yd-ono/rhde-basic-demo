@@ -3,7 +3,6 @@
 - name: deploy application to k8s
   hosts:
     - all
-  gather_facts: no
   ignore_unreachable: yes
   module_defaults:
     kubernetes.core.k8s:

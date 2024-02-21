@@ -3,7 +3,6 @@
 - name: deploy application to k8s
   hosts:
     - all
-  gather_facts: no
   ignore_unreachable: yes
   module_defaults:
     kubernetes.core.k8s:
@@ -46,3 +45,21 @@
             - files/manifests/rhamq/headless-service.yaml
           loop_control:
             loop_var: yaml_file
+        - name: get pod status
+          kubernetes.core.k8s_info:
+            kind: Pod
+            label_selectors:
+            - app = amq-broker
+          register: pod_list
+        - name: output Pod info
+          debug:
+            msg: |
+               "{{ pod_list | json_query('resources[*].metadata.name')}} is {{ pod_list | json_query('resources[*].status.phase')}}"
+        - name: get route status
+          kubernetes.core.k8s_info:
+            kind: Service
+            name: amq-broker-hdls-svc
+          register: service_list
+        - name: output Service info
+          debug:
+            msg: "Check Access: {{ service_list | json_query('resources[*])}}"
