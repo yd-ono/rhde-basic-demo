@@ -1,5 +1,6 @@
 ---
 - name: ping確認
+  gather_facts: no
   hosts:
     - all
   tasks:
