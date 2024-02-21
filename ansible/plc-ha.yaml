@@ -1,7 +1,6 @@
 ---
-- name: PLCコンテナの存在確認
-  hosts:
-    - all
+- name: PLCコンテナを実行するホストの状態とPLCコンテナの状態を確認する
+  hosts: all
   module_defaults:
     kubernetes.core.k8s:
       kubeconfig: /tmp/kubeconfig
@@ -9,10 +8,7 @@
     kubernetes.core.k8s_info:
       kubeconfig: /tmp/kubeconfig
       validate_certs: false
-      wait: true
-      wait_condition:
-        type: Ready
-        status: "True"
+  gather_facts: no
   pre_tasks:
     - name: slurp up kubeconfig
       ansible.builtin.slurp:
@@ -33,42 +29,46 @@
         permanent: true
       become: true
   tasks:
-    - name: make calls from localhost
-      delegate_to: localhost
-      block:
-        - name: get pods in plc
-          kubernetes.core.k8s_info:
-            kind: Pod
-            namespace: plc
-          retries: 5
-          delay: 10
-        - name: get pods in openshift-ovn-kubernetes
-          kubernetes.core.k8s_info:
-            kind: Pod
-            namespace: openshift-ovn-kubernetes
-          retries: 5
-          delay: 10
-        - name: get pods in openshift-dns
-          kubernetes.core.k8s_info:
-            kind: Pod
-            namespace: openshift-dns
-          retries: 5
-          delay: 10
-        - name: get pods in openshift-service-ca
-          kubernetes.core.k8s_info:
-            kind: Pod
-            namespace: openshift-service-ca
-          retries: 5
-          delay: 10
-        - name: get pods in openshift-storage
-          kubernetes.core.k8s_info:
-            kind: Pod
-            namespace: openshift-storage
-          retries: 5
-          delay: 10
-        - name: get pods in openshift-ingress
-          kubernetes.core.k8s_info:
-            kind: Pod
-            namespace: openshift-ingress
-          retries: 5
-          delay: 10
+    - name: Ping all hosts
+      ping:
+      register: ping_result
+
+    - name: Check PLC container status
+      kubernetes.core.k8s_info:
+        kind: Pod
+        namespace: plc
+      register: container_status
+      ignore_errors: yes
+
+    - set_fact:
+        ping_results: "{{ ping_result.results | map(attribute='ansible_host') | zip(ping_result.results | map(attribute='ping')) | list }}"
+        container_status: "{{ container_status.results | map(attribute='ansible_host') | zip([item.json | json_query('items[*].status.phase') | first | default('Not Found')]) | list }}"
+      loop: "{{ container_status.results }}"
+
+# - name: Start PLC container if not running
+#   hosts: localhost
+#   tasks:
+#     - name: Check if any host has PLC container running
+#       set_fact:
+#         container_running: "{{ container_status | selectattr('1', 'equalto', 'Running') | list }}"
+
+#     - name: Select host to start container A
+#       set_fact:
+#         host_to_start_container: "{{ ping_results | selectattr('1', 'equalto', 'SUCCESS') | map(attribute='0') | list | random }}"
+#       when: container_running | length == 0
+
+#     - name: Start container A if not running
+#       k8s:
+#         definition:
+#           apiVersion: v1
+#           kind: Pod
+#           metadata:
+#             name: container-a
+#             labels:
+#               app: container_a
+#           spec:
+#             containers:
+#               - name: container-a
+#                 image: your_container_image
+#       delegate_to: "{{ host_to_start_container }}"
+#       when: host_to_start_container is defined
