@@ -35,11 +35,6 @@
             name: dgw
             kind: Namespace
             state: present
-        - name: patched namespace
-          kubernetes.core.k8s:
-            name: dgw
-            kind: Namespace
-            state: patched
             definition:
               metadata:
                 labels:
