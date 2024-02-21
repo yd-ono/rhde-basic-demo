@@ -44,6 +44,7 @@
         - name: apply definitions
           kubernetes.core.k8s:
             namespace: dgw
+            state: present
             definition: "{{ lookup('file', yaml_file) | from_yaml }}"
           loop:
             - files/manifests/dgw/configmap.yaml
