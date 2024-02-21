@@ -7,6 +7,9 @@
     kubernetes.core.k8s:
       kubeconfig: /tmp/kubeconfig
       validate_certs: false
+    kubernetes.core.k8s_info:
+      kubeconfig: /tmp/kubeconfig
+      validate_certs: false
   pre_tasks:
     - name: slurp up kubeconfig
       ansible.builtin.slurp:
@@ -60,3 +63,23 @@
             - files/manifests/dgw/deployment.yaml
           loop_control:
             loop_var: yaml_file
+        - name: get pod status
+          kubernetes.core.k8s_info:
+            kind: Pod
+            namespace: dgw
+            label_selectors:
+            - app = dgw
+          register: pod_list
+        - name: output Pod info
+          debug:
+            msg: |
+               "{{ pod_list | json_query('resources[*].metadata.name')}} is {{ pod_list | json_query('resources[*].status.phase')}}"
+        - name: get route status
+          kubernetes.core.k8s_info:
+            kind: Route
+            name: dgw
+            namespace: dgw
+          register: route_list
+        - name: output Route info
+          debug:
+            msg: "Check Access: {{ route_list | json_query('resources[*].status.ingress[*].host')}}"
