@@ -11,6 +11,7 @@
         path: /etc/hosts
         line: '{{ ansible_default_ipv4.address }} {{ inventory_hostname }} {{ inventory_hostname }}.lcl'
         insertafter: EOF
+        ignore_unreachable: yes
 
 - name: MicroShiftの設定変更
   hosts:
