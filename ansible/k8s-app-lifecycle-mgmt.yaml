@@ -1,10 +1,12 @@
 ---
-- name: Device Gatewayをデプロイメント(デバイスグループ内に常時1台起動)
+- name: Device Gatewayのライフサイクルを管理
   hosts:
     - all
   vars:
     namespace: dgw
     appname: dgw
+    servicename: dgw
+    state: present
   ignore_unreachable: yes
   module_defaults:
     kubernetes.core.k8s:
@@ -23,6 +25,7 @@
       block:
       - name: 'kubeconfig内のkube-apiのエンドポイントを修正(localhost -> ansible_hostのIPアドレス)'
         delegate_to: localhost
+        when: kubeconfig_raw['content'] is defined
         ansible.builtin.copy:
           content: "{{ (kubeconfig_raw['content'] | b64decode).replace('localhost', ansible_host) }}"
           dest: /tmp/kubeconfig
@@ -103,13 +106,14 @@
 
         - debug: var=inverted_inventory_dict
 
-        - name: PLCコンテナが1台も起動していない場合にホストリストの先頭ホストを選択
+        - name: コンテナが1台も起動していない場合にホストリストの先頭ホストを選択
           set_fact:
             host_to_start_container: "{{ inventory_list[0] }}"
           when: inverted_inventory_dict.Running is not defined
-        - debug: var=host_to_start_container
+        - debug: var=ansible_host
 
         - name: Namespace作成
+          when: ansible_host == "{{ host_to_start_container[0]}}"
           kubernetes.core.k8s:
             name: "{{ namespace }}"
             kind: Namespace
@@ -122,26 +126,14 @@
                   pod-security.kubernetes.io/warn: privileged
 
         - name: "{{ appname }} コンテナのデプロイメント"
+          when: ansible_host == "{{ host_to_start_container[0]}}"
           kubernetes.core.k8s:
             namespace: "{{ namespace }}"
-            state: present
-            definition: "{{ lookup('file', yaml_file) | from_yaml }}"
-          loop:
-            - files/manifests/{{appname}}/configmap.yaml
-            - files/manifests/{{appname}}/secret.yaml
-            - files/manifests/{{appname}}/mqtt-setting.yaml
-            - files/manifests/{{appname}}/pvc-sdcard.yaml
-            - files/manifests/{{appname}}/pvc-dxpgateway.yaml
-            - files/manifests/{{appname}}/sa.yaml
-            - files/manifests/{{appname}}/clusterrole.yaml
-            - files/manifests/{{appname}}/rolebinding.yaml
-            - files/manifests/{{appname}}/service.yaml
-            - files/manifests/{{appname}}/route.yaml
-            - files/manifests/{{appname}}/deployment.yaml
-          loop_control:
-            loop_var: yaml_file
+            state: "{{ state }}"
+            definition: "{{ lookup('kubernetes.core.kustomize', binary_path='/usr/local/bin/kubectl', dir='files/manifests/' + ( appname | string) ) }}"
 
         - name: Podのステータスを確認
+          when: ansible_host == "{{ host_to_start_container[0]}}"
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: "{{namespace}}"
@@ -150,15 +142,27 @@
           register: pod_list
 
         - name: Pod情報の出力
+          when: ansible_host == "{{ host_to_start_container[0]}}"
           debug:
             msg: |
                 "{{ pod_list | json_query('resources[*].metadata.name')}} is {{ pod_list | json_query('resources[*].status.phase')}}"
 
+        - name: Serviceの状態を確認
+          kubernetes.core.k8s_info:
+            kind: Service
+            name: "{{ servicename }}"
+            namespace: "{{ namespace }}"
+          register: service_list
+        - name: output Service info
+          debug:
+            msg: "Check Access: {{ service_list | json_query('resources[*])}}"
+
         - name: Routeの状態を確認
+          when: ansible_host == "{{ host_to_start_container[0]}}"
           kubernetes.core.k8s_info:
             kind: Route
             name: "{{ appname }}"
-            namespace: dgw
+            namespace: "{{ namespace }}"
           register: route_list
         - name: output Route info
           debug:

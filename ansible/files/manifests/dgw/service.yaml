@@ -6,6 +6,7 @@ metadata:
     skupper.io/port: '80'
     skupper.io/proxy: tcp
   name: dgw
+  namespace: dgw
   labels:
     app: dgw
 spec:
