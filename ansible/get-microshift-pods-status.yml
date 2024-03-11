@@ -5,10 +5,10 @@
   ignore_unreachable: yes
   module_defaults:
     kubernetes.core.k8s:
-      kubeconfig: /tmp/kubeconfig
+      kubeconfig: "/tmp/kubeconfig-{{ ansible_host }}"
       validate_certs: false
     kubernetes.core.k8s_info:
-      kubeconfig: /tmp/kubeconfig
+      kubeconfig: "/tmp/kubeconfig-{{ ansible_host }}"
       validate_certs: false
       wait: true
       wait_condition:
@@ -21,10 +21,11 @@
       register: kubeconfig_raw
       become: true
     - name: create kubeconfig
+      when: kubeconfig_raw['content'] is defined
       delegate_to: localhost
       ansible.builtin.copy:
         content: "{{ (kubeconfig_raw['content'] | b64decode).replace('localhost', ansible_host) }}"
-        dest: /tmp/kubeconfig
+        dest: "/tmp/kubeconfig-{{ ansible_host }}"
     - name: allow API access
       ansible.posix.firewalld:
         port: 6443/tcp
@@ -34,10 +35,16 @@
         permanent: true
       become: true
   tasks:
-    - name: make calls from localhost
+
+    - name: ローカルホストから実行
       delegate_to: localhost
       block:
+        - name: kubeconfigの存在確認
+          stat:
+            path: /tmp/kubeconfig-{{ ansible_host }}
+          register: kubeonfig_check
         - name: get pods in kube-system
+          when: kubeonfig_check.stat.exists
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: kube-system
@@ -45,10 +52,12 @@
           delay: 10
           register: pod_list
         - name: output pod status
+          when: kubeonfig_check.stat.exists
           debug:
             msg: "{{ item.metadata.name }} is {{ item.status.phase }}"
           with_items: "{{ pod_list | json_query('resources[*]') }}"
         - name: get pods in openshift-ovn-kubernetes
+          when: kubeonfig_check.stat.exists
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: openshift-ovn-kubernetes
@@ -56,10 +65,12 @@
           delay: 10
           register: pod_list
         - name: output pod status
+          when: kubeonfig_check.stat.exists
           debug:
             msg: "{{ item.metadata.name }} is {{ item.status.phase }}"
           with_items: "{{ pod_list | json_query('resources[*]') }}"
         - name: get pods in openshift-dns
+          when: kubeonfig_check.stat.exists
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: openshift-dns
@@ -67,10 +78,12 @@
           delay: 10
           register: pod_list
         - name: output pod status
+          when: kubeonfig_check.stat.exists
           debug:
             msg: "{{ item.metadata.name }} is {{ item.status.phase }}"
           with_items: "{{ pod_list | json_query('resources[*]') }}"
         - name: get pods in openshift-service-ca
+          when: kubeonfig_check.stat.exists
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: openshift-service-ca
@@ -78,10 +91,12 @@
           delay: 10
           register: pod_list
         - name: output pod status
+          when: kubeonfig_check.stat.exists
           debug:
             msg: "{{ item.metadata.name }} is {{ item.status.phase }}"
           with_items: "{{ pod_list | json_query('resources[*]') }}"
         - name: get pods in openshift-storage
+          when: kubeonfig_check.stat.exists
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: openshift-storage
@@ -89,10 +104,12 @@
           delay: 10
           register: pod_list
         - name: output pod status
+          when: kubeonfig_check.stat.exists
           debug:
             msg: "{{ item.metadata.name }} is {{ item.status.phase }}"
           with_items: "{{ pod_list | json_query('resources[*]') }}"
         - name: get pods in openshift-ingress
+          when: kubeonfig_check.stat.exists
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: openshift-ingress
@@ -100,6 +117,7 @@
           delay: 10
           register: pod_list
         - name: output pod status
+          when: kubeonfig_check.stat.exists
           debug:
             msg: "{{ item.metadata.name }} is {{ item.status.phase }}"
           with_items: "{{ pod_list | json_query('resources[*]') }}"
