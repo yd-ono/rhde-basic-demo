@@ -1,19 +1,19 @@
 ---
-- name: Device Gatewayのライフサイクルを管理
+- name: 複数のエッジデバイスのグループの中で1台のエッジデバイスへPodを起動する
   hosts:
     - all
-  vars:
-    namespace: dgw
-    appname: dgw
-    servicename: dgw
-    state: present
+  vars: # デフォルト変数
+    namespace: dgw # namespace
+    appname: dgw #アプリケーション名(マニフェストのディレクトリ名と同じにすること)
+    servicename: dgw #Serviceリソースの名前(マニフェストに記載のもの)
+    state: absent # present -> 起動、absent -> 削除
   ignore_unreachable: yes
   module_defaults:
     kubernetes.core.k8s:
-      kubeconfig: /tmp/kubeconfig
+      kubeconfig: "/tmp/kubeconfig-{{ ansible_host }}"
       validate_certs: false
     kubernetes.core.k8s_info:
-      kubeconfig: /tmp/kubeconfig
+      kubeconfig: "/tmp/kubeconfig-{{ ansible_host }}"
       validate_certs: false
   pre_tasks:
     - name: slurp up kubeconfig
@@ -23,15 +23,15 @@
       become: true
     - name: create kubeconfig
       block:
-      - name: 'kubeconfig内のkube-apiのエンドポイントを修正(localhost -> ansible_hostのIPアドレス)'
+      - name: kubeconfig内のkube-apiのエンドポイントを localhost から {{ ansible_host }} へ修正
         delegate_to: localhost
         when: kubeconfig_raw['content'] is defined
         ansible.builtin.copy:
           content: "{{ (kubeconfig_raw['content'] | b64decode).replace('localhost', ansible_host) }}"
-          dest: /tmp/kubeconfig
+          dest: "/tmp/kubeconfig-{{ ansible_host }}"
       rescue:
         - debug:
-            msg: 'OS停止中のホストは処理をスキップする。'
+            msg: OS停止中のホストは処理をスキップする。
     - name: allow API access
       ansible.posix.firewalld:
         port: 6443/tcp
@@ -46,7 +46,7 @@
       delegate_to: localhost
       block:
 
-        - name: イベントリからホストのリストを作成
+        - name: イベントリからホストリストを作成
           set_fact:
             inventory_list: "{{ hostvars | dict2items | map(attribute='value') | map(attribute='ansible_host') | zip(ansible_play_hosts_all) | list }}"
 
@@ -56,7 +56,7 @@
 
         - debug: var=inventory_dict
 
-        - name: PLC Podの起動状態を確認
+        - name: "{{ appname}} Podの起動状態を確認"
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: "{{ namespace }}"
@@ -66,7 +66,7 @@
 
         - debug: var=container_status
 
-        - name: Podが起動するhostIPとPodのstatusのkey/valueペアを作成
+        - name: "{{ appname}} Podが起動するhostIPとPod statusのkey/valueペアを作成"
           set_fact:
             container_status: >-
               {%- set tmpdict = {} -%}
@@ -106,7 +106,7 @@
 
         - debug: var=inverted_inventory_dict
 
-        - name: コンテナが1台も起動していない場合にホストリストの先頭ホストを選択
+        - name: "{{ appname}} Pod が1台も起動していない場合、ホストリストの先頭ホストを選択"
           set_fact:
             host_to_start_container: "{{ inventory_list[0] }}"
           when: inverted_inventory_dict.Running is not defined
@@ -125,14 +125,14 @@
                   pod-security.kubernetes.io/audit: privileged
                   pod-security.kubernetes.io/warn: privileged
 
-        - name: "{{ appname }} コンテナのデプロイメント"
+        - name: "{{ appname }} Pod のデプロイメント"
           when: ansible_host == "{{ host_to_start_container[0]}}"
           kubernetes.core.k8s:
             namespace: "{{ namespace }}"
             state: "{{ state }}"
             definition: "{{ lookup('kubernetes.core.kustomize', binary_path='/usr/local/bin/kubectl', dir='files/manifests/' + ( appname | string) ) }}"
 
-        - name: Podのステータスを確認
+        - name: "{{ appname }} Podのステータスを確認"
           when: ansible_host == "{{ host_to_start_container[0]}}"
           kubernetes.core.k8s_info:
             kind: Pod
@@ -141,13 +141,14 @@
             - app = {{ appname }}
           register: pod_list
 
-        - name: Pod情報の出力
+        - name: "{{ appname }} Pod情報の出力"
           when: ansible_host == "{{ host_to_start_container[0]}}"
           debug:
             msg: |
                 "{{ pod_list | json_query('resources[*].metadata.name')}} is {{ pod_list | json_query('resources[*].status.phase')}}"
 
         - name: Serviceの状態を確認
+          when: ansible_host == "{{ host_to_start_container[0]}}"
           kubernetes.core.k8s_info:
             kind: Service
             name: "{{ servicename }}"
@@ -155,7 +156,7 @@
           register: service_list
         - name: output Service info
           debug:
-            msg: "Check Access: {{ service_list | json_query('resources[*])}}"
+            msg: "Check Access: {{ service_list }}"
 
         - name: Routeの状態を確認
           when: ansible_host == "{{ host_to_start_container[0]}}"

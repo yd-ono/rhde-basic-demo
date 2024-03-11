@@ -1,0 +1,65 @@
+---
+- name: 複数のエッジデバイス上のK8sアプリケーションの状態を取得する
+  hosts:
+    - all
+  vars: # デフォルト変数
+    namespace: dgw # namespace
+    appname: dgw #アプリケーション名(マニフェストのディレクトリ名と同じにすること)
+    servicename: dgw #Serviceリソースの名前(マニフェストに記載のもの)
+    state: absent # present -> 起動、absent -> 削除
+  ignore_unreachable: yes
+  module_defaults:
+    kubernetes.core.k8s:
+      kubeconfig: "/tmp/kubeconfig-{{ ansible_host }}"
+      validate_certs: false
+    kubernetes.core.k8s_info:
+      kubeconfig: "/tmp/kubeconfig-{{ ansible_host }}"
+      validate_certs: false
+  pre_tasks:
+    - name: slurp up kubeconfig
+      ansible.builtin.slurp:
+        path: /var/lib/microshift/resources/kubeadmin/kubeconfig
+      register: kubeconfig_raw
+      become: true
+    - name: create kubeconfig
+      block:
+      - name: kubeconfig内のkube-apiのエンドポイントを localhost から {{ ansible_host }} へ修正
+        delegate_to: localhost
+        when: kubeconfig_raw['content'] is defined
+        ansible.builtin.copy:
+          content: "{{ (kubeconfig_raw['content'] | b64decode).replace('localhost', ansible_host) }}"
+          dest: "/tmp/kubeconfig-{{ ansible_host }}"
+      rescue:
+        - debug:
+            msg: OS停止中のホストは処理をスキップする。
+    - name: allow API access
+      ansible.posix.firewalld:
+        port: 6443/tcp
+        zone: public
+        state: enabled
+        immediate: true
+        permanent: true
+      become: true
+
+  tasks:
+    - name: localhostから実行
+      delegate_to: localhost
+      block:
+        - name: kubeconfigの存在確認
+          stat:
+            path: /tmp/kubeconfig-{{ ansible_host }}
+          register: kubeonfig_check
+
+        - name: "{{ appname }} Podのステータスを確認"
+          when: kubeonfig_check.stat.exists
+          kubernetes.core.k8s_info:
+            kind: Pod
+            namespace: "{{namespace}}"
+            label_selectors:
+            - app = {{ appname }}
+          register: pod_list
+
+        - name: "{{ appname }} Pod情報の出力"
+          debug:
+            msg: |
+                "{{ pod_list | json_query('resources[*].metadata.name')}} is {{ pod_list | json_query('resources[*].status.phase')}}"
