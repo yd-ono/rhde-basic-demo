@@ -4,4 +4,5 @@ resources:
 - sa.yaml
 - service.yaml
 - route.yaml
+- pvc.yaml
 - deployment.yaml
