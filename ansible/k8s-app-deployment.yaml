@@ -1,12 +1,12 @@
 ---
-- name: 複数のエッジデバイスへ同じK8sアプリケーションを一斉に展開する
+- name: 複数のエッジデバイスの同じK8sアプリケーションのライフサイクルを管理する
   hosts:
     - all
   vars: # デフォルト変数
     namespace: dgw # namespace
     appname: dgw #アプリケーション名(マニフェストのディレクトリ名と同じにすること)
     servicename: dgw #Serviceリソースの名前(マニフェストに記載のもの)
-    state: present # present -> 起動、absent -> 削除
+    state: absent # present -> 起動、absent -> 削除
   ignore_unreachable: yes
   module_defaults:
     kubernetes.core.k8s:

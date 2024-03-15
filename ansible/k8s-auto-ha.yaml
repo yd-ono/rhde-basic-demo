@@ -49,7 +49,7 @@
         - name: kubeconfigの存在確認
           stat:
             path: /tmp/kubeconfig-{{ ansible_host }}
-          register: kubeonfig_check
+          register: kubeconfig_check
 
         - name: イベントリからホストリストを作成
           set_fact:
@@ -61,18 +61,18 @@
 
         - debug: var=inventory_dict
 
-        - name: "{{ appname}} Podの起動状態を確認"
-          when: kubeonfig_check.stat.exists
+        - name: "{{ appname }} Podの起動状態を確認"
+          when: kubeconfig_check.stat.exists
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: "{{ namespace }}"
             label_selectors:
-            - app = "{{ appname }}"
+            - app = {{ appname }}
           register: container_status
 
         - debug: var=container_status
 
-        - name: "{{ appname}} Podが起動するhostIPとPod statusのkey/valueペアを作成"
+        - name: "{{ appname }} Podが起動するhostIPとPod statusのkey/valueペアを作成"
           set_fact:
             container_status: >-
               {%- set tmpdict = {} -%}
@@ -90,7 +90,7 @@
 
         - debug: var=inventory_dict
 
-        - name: 不要なkeyが存在する項目を除外
+        - name: 不要なkeyを除外
           set_fact:
             inventory_dict: "{{ inventory_dict | dict2items | rejectattr('key', 'in', ['api_found', 'changed', 'failed', 'resources']) | map(attribute='value') | zip(inventory_dict | dict2items | map(attribute='key')) | list }}"
 
@@ -106,21 +106,65 @@
 
         - debug: var=inverted_inventory_dict
 
-        - name: イベントリ情報の辞書化
+        - name: 再度辞書化する(IPアドレス順にソート)
           set_fact:
             inverted_inventory_dict: "{{ dict(inverted_inventory_dict) }}"
 
         - debug: var=inverted_inventory_dict
 
-        - name: "{{ appname}} Pod が1台も起動していない場合、ホストリストの先頭ホストを選択"
+        - name: ホストの起動状態を確認
+          block:
+          - name: ping確認
+            delegate_to: "{{ item }}"
+            ansible.builtin.ping:
+            register: ping_result
+            with_items: "{{ inverted_inventory_dict }}"
+          rescue:
+            - debug:
+                msg: OS停止中のホストは処理をスキップする。
+
+        - debug:
+            msg: "{{ ping_result | json_query('results[]')}}"
+          register: ping_result
+
+        - name: Ping結果の収集
           set_fact:
-            host_to_start_container: "{{ inventory_list[0] }}"
-          when: inverted_inventory_dict.Running is not defined
+            ping_results: "{{ ping_results | default({}) | combine({item.item: 'OK' if item.ping is defined else 'NG'}) }}"
+          loop: "{{ ping_result | json_query('msg[]') }}"
+
+        # - name: "各ホストのPing結果を書き出し"
+        #   lineinfile:
+        #     create: true
+        #     path: /tmp/ping-result-tmp-{{ ansible_host}}.txt
+        #     line: "{{ item }}"
+        #   loop: "{{ ping_status_list | json_query('msg[]') }}"
+
+        - debug: var=ping_results
+
+        - name: "Ping OKのホストの内、{{ appname }} Pod が1台も起動していない場合、そのホストリストから1台を選択する"
+          set_fact:
+            host_to_start_container: "{{ item.key }}"
+          when:
+            - item.value == "OK"
+            - inverted_inventory_dict[item.key] != "Running"
+          loop: "{{ ping_results | dict2items }}"
+          loop_control:
+            label: "{{ item.key }}"
+
+        - name: "{{ appname }} Pod が Runningのホストが既に存在する場合は、そのホストのIPアドレスで上書きする"
+          set_fact:
+            host_to_start_container: "{{ item.key }}"
+          when: "'Running' in inverted_inventory_dict.values()"
+          loop: "{{ inverted_inventory_dict | dict2items }}"
+          loop_control:
+            label: "{{ item.key }}"
+          vars:
+            running_hosts: []
 
         - debug: var="host_to_start_container"
 
         - name: Namespace作成
-          when: kubeonfig_check.stat.exists
+          when: kubeconfig_check.stat.exists
           kubernetes.core.k8s:
             name: "{{ namespace }}"
             kind: Namespace
@@ -133,14 +177,14 @@
                   pod-security.kubernetes.io/warn: privileged
 
         - name: "{{ appname }} Pod のデプロイメント"
-          when: "ansible_host == ( host_to_start_container[0] )"
+          when: "ansible_host == ( host_to_start_container )"
           kubernetes.core.k8s:
             namespace: "{{ namespace }}"
             state: "{{ state }}"
             definition: "{{ lookup('kubernetes.core.kustomize', binary_path='/usr/local/bin/kubectl', dir='/runner/project/ansible/files/manifests/' + ( appname | string) ) }}"
 
         - name: "{{ appname }} Podのステータスを確認"
-          when: "ansible_host == ( host_to_start_container[0] )"
+          when: "ansible_host == ( host_to_start_container )"
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: "{{namespace}}"
@@ -149,13 +193,13 @@
           register: pod_list
 
         - name: "{{ appname }} Pod情報の出力"
-          when: "ansible_host == ( host_to_start_container[0] )"
+          when: "ansible_host == ( host_to_start_container )"
           debug:
             msg: |
                 "{{ pod_list | json_query('resources[*].metadata.name')}} is {{ pod_list | json_query('resources[*].status.phase')}}"
 
         - name: Serviceの状態を確認
-          when: "ansible_host == ( host_to_start_container[0] )"
+          when: "ansible_host == ( host_to_start_container )"
           kubernetes.core.k8s_info:
             kind: Service
             name: "{{ servicename }}"
@@ -166,7 +210,7 @@
             msg: "Check Access: {{ service_list }}"
 
         - name: Routeの状態を確認
-          when: "ansible_host == ( host_to_start_container[0] )"
+          when: "ansible_host == ( host_to_start_container )"
           kubernetes.core.k8s_info:
             kind: Route
             name: "{{ appname }}"
