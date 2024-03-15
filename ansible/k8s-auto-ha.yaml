@@ -120,6 +120,7 @@
         - debug: var="host_to_start_container"
 
         - name: Namespace作成
+          when: kubeonfig_check.stat.exists
           kubernetes.core.k8s:
             name: "{{ namespace }}"
             kind: Namespace
