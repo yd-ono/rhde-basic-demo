@@ -16,11 +16,11 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 32080
+      nodePort: 32001
     - name: 443-tcp
       protocol: TCP
       port: 443
       targetPort: 443
-      nodePort: 32001
+      nodePort: 32002
   selector:
     app: dgw
