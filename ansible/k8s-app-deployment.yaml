@@ -69,7 +69,7 @@
           kubernetes.core.k8s:
             namespace: "{{ namespace }}"
             state: "{{ state }}"
-            definition: "{{ lookup('kubernetes.core.kustomize', binary_path='/usr/local/bin/kubectl', dir='files/manifests/' + ( appname | string) ) }}"
+            definition: "{{ lookup('kubernetes.core.kustomize', binary_path='/usr/local/bin/kubectl', dir='./files/manifests/' + ( appname | string) ) }}"
 
         - name: "{{ appname }} Podのステータスを確認"
           when: kubeonfig_check.stat.exists
