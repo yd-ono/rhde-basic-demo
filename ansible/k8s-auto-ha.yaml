@@ -46,6 +46,11 @@
       delegate_to: localhost
       block:
 
+        - name: kubeconfigの存在確認
+          stat:
+            path: /tmp/kubeconfig-{{ ansible_host }}
+          register: kubeonfig_check
+
         - name: イベントリからホストリストを作成
           set_fact:
             inventory_list: "{{ hostvars | dict2items | map(attribute='value') | map(attribute='ansible_host') | zip(ansible_play_hosts_all) | list }}"
@@ -57,6 +62,7 @@
         - debug: var=inventory_dict
 
         - name: "{{ appname}} Podの起動状態を確認"
+          when: kubeonfig_check.stat.exists
           kubernetes.core.k8s_info:
             kind: Pod
             namespace: "{{ namespace }}"
