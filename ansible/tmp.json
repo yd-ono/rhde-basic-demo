@@ -1,0 +1,91 @@
+{
+    "msg": [
+        {
+            "ansible_loop_var": "item",
+            "changed": true,
+            "cmd": [
+                "ping",
+                "-c",
+                "1",
+                "-w",
+                "1",
+                "10.0.2.87"
+            ],
+            "delta": "0:00:00.298127",
+            "end": "2024-03-16 00:11:43.421397",
+            "failed": true,
+            "invocation": {
+                "module_args": {
+                    "_raw_params": "ping -c 1 -w 1 10.0.2.87",
+                    "_uses_shell": false,
+                    "argv": null,
+                    "chdir": null,
+                    "creates": null,
+                    "executable": null,
+                    "removes": null,
+                    "stdin": null,
+                    "stdin_add_newline": true,
+                    "strip_empty_ends": true
+                }
+            },
+            "item": "10.0.2.87",
+            "msg": "non-zero return code",
+            "rc": 1,
+            "start": "2024-03-16 00:11:43.123270",
+            "stderr": "",
+            "stderr_lines": [],
+            "stdout": "PING 10.0.2.87 (10.0.2.87) 56(84) bytes of data.\n送信元 10.0.2.15 icmp_seq=1 目的のホストへ届きません。\n\n--- 10.0.2.87 ping 統計 ---\n送信パケット数 1, 受信パケット数 0, +1 エラー, 100% packet loss, time 0ms",
+            "stdout_lines": [
+                "PING 10.0.2.87 (10.0.2.87) 56(84) bytes of data.",
+                "送信元 10.0.2.15 icmp_seq=1 目的のホストへ届きません。",
+                "",
+                "--- 10.0.2.87 ping 統計 ---",
+                "送信パケット数 1, 受信パケット数 0, +1 エラー, 100% packet loss, time 0ms"
+            ]
+        },
+        {
+            "ansible_loop_var": "item",
+            "changed": true,
+            "cmd": [
+                "ping",
+                "-c",
+                "1",
+                "-w",
+                "1",
+                "10.0.2.88"
+            ],
+            "delta": "0:00:00.006189",
+            "end": "2024-03-16 00:11:43.708004",
+            "failed": false,
+            "invocation": {
+                "module_args": {
+                    "_raw_params": "ping -c 1 -w 1 10.0.2.88",
+                    "_uses_shell": false,
+                    "argv": null,
+                    "chdir": null,
+                    "creates": null,
+                    "executable": null,
+                    "removes": null,
+                    "stdin": null,
+                    "stdin_add_newline": true,
+                    "strip_empty_ends": true
+                }
+            },
+            "item": "10.0.2.88",
+            "msg": "",
+            "rc": 0,
+            "start": "2024-03-16 00:11:43.701815",
+            "stderr": "",
+            "stderr_lines": [],
+            "stdout": "PING 10.0.2.88 (10.0.2.88) 56(84) bytes of data.\n64 バイト応答 送信元 10.0.2.88: icmp_seq=1 ttl=64 時間=0.856ミリ秒\n\n--- 10.0.2.88 ping 統計 ---\n送信パケット数 1, 受信パケット数 1, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.856/0.856/0.856/0.000 ms",
+            "stdout_lines": [
+                "PING 10.0.2.88 (10.0.2.88) 56(84) bytes of data.",
+                "64 バイト応答 送信元 10.0.2.88: icmp_seq=1 ttl=64 時間=0.856ミリ秒",
+                "",
+                "--- 10.0.2.88 ping 統計 ---",
+                "送信パケット数 1, 受信パケット数 1, 0% packet loss, time 0ms",
+                "rtt min/avg/max/mdev = 0.856/0.856/0.856/0.000 ms"
+            ]
+        }
+    ]
+}
