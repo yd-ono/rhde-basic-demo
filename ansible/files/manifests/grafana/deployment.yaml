@@ -43,6 +43,9 @@ spec:
         - mountPath: /etc/grafana/grafana.ini
           subPath: grafana.ini
           name: grafana-ini
+        - mountPath: /etc/grafana/provisioning/datasources
+          name: grafana-datasources
+          readOnly: false
       volumes:
         - name: grafana-pv
           persistentVolumeClaim:
@@ -53,6 +56,10 @@ spec:
             items:
               - key: grafana.ini
                 path: grafana.ini
+        - name: grafana-datasources
+          configMap:
+              defaultMode: 420
+              name: grafana-mqtt-datasource
       serviceAccount: grafana
       serviceAccountName: grafana
 ---
