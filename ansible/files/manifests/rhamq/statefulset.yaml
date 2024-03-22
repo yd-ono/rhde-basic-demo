@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: amq-broker
-        image: {{ .Values.mqtt.image }}
+        image: registry.redhat.io/amq7/amq-broker-rhel8:7.11.1-2.1689584940
         imagePullPolicy: IfNotPresent
         persistenceEnabled: true
         storage:
@@ -36,7 +36,7 @@ spec:
         - name: AMQ_PASSWORD
           value: admin
         ports:
-         - containerPort: {{ .Values.mqtt.port }} # general
+         - containerPort: 61616
         volumeMounts:
           - name: amq-broker-datavol
             mountPath: /data
