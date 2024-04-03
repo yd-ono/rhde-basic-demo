@@ -31,9 +31,9 @@ spec:
             name: pvc-dxpgateway
           - mountPath: /mnt/sdcard
             name: pvc-sdcard
-          - mountPath: /mnt/sdcard/DeviceGateway.lic
-            subPath: DeviceGateway.lic
-            name: license
+          # - mountPath: /mnt/sdcard/DeviceGateway.lic
+          #   subPath: DeviceGateway.lic
+          #   name: license
           - mountPath: /etc/dxpgateway/config/setting.dxg.tpl
             subPath: setting.dxg.tpl
             name: setting
@@ -55,13 +55,13 @@ spec:
       - name: pvc-sdcard
         persistentVolumeClaim:
           claimName: pvc-sdcard
-      - name: license
-        secret:
-          secretName: dgw-license
-          readOnly: true
-          items:
-            - key: DeviceGateway.lic
-              path: DeviceGateway.lic
+      # - name: license
+      #   secret:
+      #     secretName: dgw-license
+      #     readOnly: true
+      #     items:
+      #       - key: DeviceGateway.lic
+      #         path: DeviceGateway.lic
       - name: setting
         configMap:
           name: dgw-settings

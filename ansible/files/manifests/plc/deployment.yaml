@@ -21,6 +21,8 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
+            - containerPort: 502
+              protocol: TCP
           volumeMounts:
           - mountPath: "/persistent"
             name: plc-persistent
