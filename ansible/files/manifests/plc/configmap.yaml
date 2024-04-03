@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: plc-settings
+  namespace: dgw
+data:
+  setting.dxg.tpl: |

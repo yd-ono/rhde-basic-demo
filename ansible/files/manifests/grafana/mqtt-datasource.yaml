@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-mqtt-datasource
+data:
+  ds.yaml: |-
+    {
+        "apiVersion": 1,
+        "datasources": [
+            {
+               "access":"proxy",
+               "uid":"azure",
+                "editable": true,
+                "name": "Azure Monitor",
+                "orgId": 1,
+                "type": "grafana-azure-monitor-datasource",
+                "jsonData":{
+                  "azureAuthType": "clientsecret",
+                  "cloudName":"azuremonitor",
+                  "tenantId": "your tenant id",
+                  "clientId": "your client id",
+                  "subscriptionId": " your subscription id"
+                },
+                "secureJsonData":
+                  {
+                    "clientSecret":"your client secret"
+                  },
+                "version": 1
+            },
+            {
+              "uid":"loki",
+              "name": "Loki",
+              "type": "loki",
+              "url": "http://loki.loki:3100"
+            }
+        ]
+    }
