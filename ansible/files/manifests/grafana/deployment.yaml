@@ -77,8 +77,8 @@ spec:
           configMap:
             name: grafana-dashboard-content
             items:
-              - key: OEE.json
-                path: OEE.json
+              - key: scada.json
+                path: scada.json
       serviceAccount: grafana
       serviceAccountName: grafana
 ---
