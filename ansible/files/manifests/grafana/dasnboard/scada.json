@@ -43,6 +43,50 @@
                 }
               },
               "type": "value"
+            },
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "color": "red",
+                  "index": 2,
+                  "text": "❌"
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "nan",
+                "result": {
+                  "color": "red",
+                  "index": 3,
+                  "text": "❌"
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "false",
+                "result": {
+                  "color": "red",
+                  "index": 4,
+                  "text": "❌"
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "empty",
+                "result": {
+                  "color": "red",
+                  "index": 5,
+                  "text": "❌"
+                }
+              },
+              "type": "special"
             }
           ],
           "thresholds": {
@@ -851,7 +895,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-10s",
     "to": "now"
   },
   "timeRangeUpdatedDuringEditOrView": false,
