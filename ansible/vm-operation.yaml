@@ -8,26 +8,22 @@
   ignore_unreachable: yes
 
   tasks:
-    - name: localhostから実行
-      delegate_to: localhost
-      block:
+    - name: "VMのステータスを確認"
+      command: sudo virsh list --all
+      become: yes
+      become_method: su
+      register: vm_status
+    - name: "結果を出力"
+      debug:
+        msg: "{{ vm_status }}"
 
-        - name: "VMのステータスを確認"
-          command: sudo virsh list --all
-          become: yes
-          become_method: su
-          register: vm_status
-        - name: "結果を出力"
-          debug:
-            msg: "{{ vm_status }}"
+    - name: "{{ vmname }} VMへ操作"
+      command: sudo virsh {{ operate }} {{ vmname }}
+      become: yes
+      become_method: su
+      register: result
 
-        - name: "{{ vmname }} VMへ操作"
-          command: sudo virsh {{ operate }} {{ vmname }}
-          become: yes
-          become_method: su
-          register: result
-
-        - name: "結果を出力"
-          debug:
-            msg: |
-                "{{ result }}"
+    - name: "結果を出力"
+      debug:
+        msg: |
+            "{{ result }}"
