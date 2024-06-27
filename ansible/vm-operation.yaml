@@ -1,0 +1,26 @@
+---
+- name: エッジデバイス上の仮想マシンを操作する
+  hosts:
+    - all
+  vars: # デフォルト変数
+    vmname: simulation # namespace
+    operate: reboot #アプリケーション名(マニフェストのディレクトリ名と同じにすること)
+  ignore_unreachable: yes
+
+  tasks:
+    - name: localhostから実行
+      delegate_to: localhost
+      block:
+
+        - name: "VMのステータスを確認"
+          shell: sudo virsh list --all
+          register: vm_status
+          debug:
+            msg: "{{ vm_status }}"
+
+        - name: "{{ vmname }} VMへ操作"
+          shell: sudo virsh {{ operate }} {{ vmname }}
+          register: result
+          debug:
+            msg: |
+                "{{ result }}"
