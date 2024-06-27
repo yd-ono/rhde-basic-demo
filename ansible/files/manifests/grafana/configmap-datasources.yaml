@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource
+data:
+  datasource.yml: |
+    # config file version
+    apiVersion: 1
+    datasources:
+      - name: grafana-mqtt-datasource
+        type: grafana-mqtt-datasource
+        uid: adoq5o1nl0p34c
+        isDefault: true
+        editable: true
+        jsonData:
+          uri: tcp://amq-broker-hdls-svc:61616
+          username: admin
+        secureJsonData:
+          password: admin

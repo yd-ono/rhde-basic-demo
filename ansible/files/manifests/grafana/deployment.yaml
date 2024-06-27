@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grafana
-  namespace: dgw
   labels:
     app: grafana
 spec:
@@ -25,7 +24,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: GF_INSTALL_PLUGINS
-          value: hamedkarbasi93-kafka-datasource, grafana-mqtt-datasource
+          value: grafana-mqtt-datasource
         ports:
         - containerPort: 3000
           name: http-grafana
@@ -43,9 +42,15 @@ spec:
         - mountPath: /etc/grafana/grafana.ini
           subPath: grafana.ini
           name: grafana-ini
-        - mountPath: /etc/grafana/provisioning/datasources
-          name: grafana-datasources
-          readOnly: false
+        - mountPath: /etc/grafana/provisioning/datasources/datasource.yml
+          subPath: datasource.yml
+          name: grafana-datasource
+        - mountPath: /etc/grafana/provisioning/dashboards/dashboard.yml
+          subPath: dashboard.yml
+          name: grafana-dashboard
+        - mountPath: /var/lib/grafana/dashboards/OEE.json
+          subPath: OEE.json
+          name: grafana-dashboard-content
       volumes:
         - name: grafana-pv
           persistentVolumeClaim:
@@ -56,10 +61,24 @@ spec:
             items:
               - key: grafana.ini
                 path: grafana.ini
-        - name: grafana-datasources
+        - name: grafana-datasource
           configMap:
-              defaultMode: 420
-              name: grafana-mqtt-datasource
+            name: grafana-datasource
+            items:
+              - key: datasource.yml
+                path: datasource.yml
+        - name: grafana-dashboard
+          configMap:
+            name: grafana-dashboard
+            items:
+              - key: dashboard.yml
+                path: dashboard.yml
+        - name: grafana-dashboard-content
+          configMap:
+            name: grafana-dashboard-content
+            items:
+              - key: OEE.json
+                path: OEE.json
       serviceAccount: grafana
       serviceAccountName: grafana
 ---
