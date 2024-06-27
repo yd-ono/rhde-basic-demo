@@ -43,50 +43,6 @@
                 }
               },
               "type": "value"
-            },
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "color": "red",
-                  "index": 2,
-                  "text": "❌"
-                }
-              },
-              "type": "special"
-            },
-            {
-              "options": {
-                "match": "nan",
-                "result": {
-                  "color": "red",
-                  "index": 3,
-                  "text": "❌"
-                }
-              },
-              "type": "special"
-            },
-            {
-              "options": {
-                "match": "false",
-                "result": {
-                  "color": "red",
-                  "index": 4,
-                  "text": "❌"
-                }
-              },
-              "type": "special"
-            },
-            {
-              "options": {
-                "match": "empty",
-                "result": {
-                  "color": "red",
-                  "index": 5,
-                  "text": "❌"
-                }
-              },
-              "type": "special"
             }
           ],
           "thresholds": {
@@ -547,7 +503,7 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "axisSoftMax": 3300,
+            "axisSoftMax": 3500,
             "axisSoftMin": 0,
             "barAlignment": 0,
             "drawStyle": "line",
@@ -612,7 +568,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 16,
+        "h": 18,
         "w": 7,
         "x": 0,
         "y": 5
@@ -725,7 +681,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 16,
+        "h": 18,
         "w": 9,
         "x": 7,
         "y": 5
@@ -837,7 +793,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 16,
+        "h": 18,
         "w": 8,
         "x": 16,
         "y": 5
@@ -895,7 +851,7 @@
     "list": []
   },
   "time": {
-    "from": "now-10s",
+    "from": "now-5m",
     "to": "now"
   },
   "timeRangeUpdatedDuringEditOrView": false,
@@ -903,6 +859,6 @@
   "timezone": "",
   "title": "SCADA",
   "uid": "b4e94ce6-40cc-4f31-9849-dd817641685c",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
