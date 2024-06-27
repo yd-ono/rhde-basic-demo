@@ -48,8 +48,8 @@ spec:
         - mountPath: /etc/grafana/provisioning/dashboards/dashboard.yml
           subPath: dashboard.yml
           name: grafana-dashboard
-        - mountPath: /var/lib/grafana/dashboards/OEE.json
-          subPath: OEE.json
+        - mountPath: /var/lib/grafana/dashboards/scada.json
+          subPath: scada.json
           name: grafana-dashboard-content
       volumes:
         - name: grafana-pv
