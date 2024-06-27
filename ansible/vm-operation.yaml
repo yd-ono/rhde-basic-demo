@@ -9,7 +9,7 @@
 
   tasks:
     - name: "VMのステータスを確認"
-      command: sudo virsh list --all
+      command: virsh list --all
       become: yes
       become_method: su
       register: vm_status
@@ -18,7 +18,7 @@
         msg: "{{ vm_status }}"
 
     - name: "{{ vmname }} VMへ操作"
-      command: sudo virsh {{ operate }} {{ vmname }}
+      command: virsh {{ operate }} {{ vmname }}
       become: yes
       become_method: su
       register: result
