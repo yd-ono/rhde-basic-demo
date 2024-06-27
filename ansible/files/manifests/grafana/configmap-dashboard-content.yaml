@@ -24,40 +24,89 @@ data:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 1,
       "links": [],
       "liveNow": false,
       "panels": [
         {
-          "datasource": {
-            "type": "grafana-mqtt-datasource",
-            "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
+          "datasource": {},
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "0": {
+                      "color": "green",
+                      "index": 0,
+                      "text": "🟢"
+                    },
+                    "1": {
+                      "color": "red",
+                      "index": 1,
+                      "text": "❌"
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
           },
-          "description": "",
           "gridPos": {
-            "h": 14,
-            "w": 9,
+            "h": 5,
+            "w": 1,
             "x": 0,
             "y": 0
           },
-          "id": 4,
+          "id": 8,
+          "maxDataPoints": 1000,
           "options": {
-            "code": {
-              "language": "plaintext",
-              "showLineNumbers": false,
-              "showMiniMap": false
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "vertical",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/^run$/",
+              "values": false
             },
-            "content": "<iframe src=http://192.168.90.5:8080/ScadaBR/views.shtm width=\"2048\" height=\"6000\">",
-            "mode": "html"
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
           },
-          "pluginVersion": "10.2.3",
-          "type": "text"
+          "pluginVersion": "11.0.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-mqtt-datasource",
+                "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
+              },
+              "refId": "A",
+              "topic": "plc"
+            }
+          ],
+          "title": "稼働状態",
+          "type": "stat"
         },
         {
-          "datasource": {
-            "type": "grafana-mqtt-datasource",
-            "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
-          },
+          "datasource": {},
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -76,33 +125,35 @@ data:
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "percent"
             },
             "overrides": []
           },
           "gridPos": {
-            "h": 14,
-            "w": 15,
-            "x": 9,
+            "h": 5,
+            "w": 3,
+            "x": 1,
             "y": 0
           },
-          "id": 3,
+          "id": 5,
+          "maxDataPoints": 1000,
           "options": {
-            "minVizHeight": 200,
-            "minVizWidth": 200,
-            "orientation": "auto",
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "vertical",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
               ],
-              "fields": "",
+              "fields": "/^level$/",
               "values": false
             },
             "showThresholdLabels": false,
             "showThresholdMarkers": true,
             "sizing": "auto"
           },
-          "pluginVersion": "10.2.3",
+          "pluginVersion": "11.0.0",
           "targets": [
             {
               "datasource": {
@@ -113,13 +164,83 @@ data:
               "topic": "plc"
             }
           ],
+          "title": "現在のレベル",
           "type": "gauge"
         },
         {
-          "datasource": {
-            "type": "grafana-mqtt-datasource",
-            "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
+          "datasource": {},
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "max": 3298,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "#6ED0E0",
+                    "value": 1000
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 2000
+                  },
+                  {
+                    "color": "red",
+                    "value": 3000
+                  }
+                ]
+              },
+              "unit": "pressurepa"
+            },
+            "overrides": []
           },
+          "gridPos": {
+            "h": 5,
+            "w": 3,
+            "x": 4,
+            "y": 0
+          },
+          "id": 11,
+          "maxDataPoints": 1000,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "vertical",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/^pressure$/",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true,
+            "sizing": "auto"
+          },
+          "pluginVersion": "11.0.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-mqtt-datasource",
+                "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
+              },
+              "refId": "A",
+              "topic": "plc"
+            }
+          ],
+          "title": "現在の圧力",
+          "type": "gauge"
+        },
+        {
+          "datasource": {},
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -143,31 +264,32 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 11,
-            "w": 24,
-            "x": 0,
-            "y": 14
+            "h": 5,
+            "w": 4,
+            "x": 7,
+            "y": 0
           },
-          "id": 2,
+          "id": 10,
+          "maxDataPoints": 1000,
           "options": {
-            "displayMode": "gradient",
+            "displayMode": "lcd",
             "maxVizHeight": 300,
-            "minVizHeight": 75,
-            "minVizWidth": 75,
+            "minVizHeight": 16,
+            "minVizWidth": 8,
             "namePlacement": "auto",
-            "orientation": "auto",
+            "orientation": "vertical",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
               ],
-              "fields": "",
+              "fields": "/^avalve$/",
               "values": false
             },
             "showUnfilled": true,
             "sizing": "auto",
             "valueMode": "color"
           },
-          "pluginVersion": "10.2.3",
+          "pluginVersion": "11.0.0",
           "targets": [
             {
               "datasource": {
@@ -178,12 +300,334 @@ data:
               "topic": "plc"
             }
           ],
+          "title": "Aバルブ",
           "type": "bargauge"
+        },
+        {
+          "datasource": {},
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 4,
+            "x": 11,
+            "y": 0
+          },
+          "id": 4,
+          "maxDataPoints": 1000,
+          "options": {
+            "displayMode": "lcd",
+            "maxVizHeight": 300,
+            "minVizHeight": 16,
+            "minVizWidth": 8,
+            "namePlacement": "auto",
+            "orientation": "vertical",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/^bvalve$/",
+              "values": false
+            },
+            "showUnfilled": true,
+            "sizing": "auto",
+            "valueMode": "color"
+          },
+          "pluginVersion": "11.0.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-mqtt-datasource",
+                "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
+              },
+              "refId": "A",
+              "topic": "plc"
+            }
+          ],
+          "title": "Bバルブ",
+          "type": "bargauge"
+        },
+        {
+          "datasource": {},
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 4,
+            "x": 15,
+            "y": 0
+          },
+          "id": 6,
+          "maxDataPoints": 1000,
+          "options": {
+            "displayMode": "lcd",
+            "maxVizHeight": 300,
+            "minVizHeight": 16,
+            "minVizWidth": 8,
+            "namePlacement": "auto",
+            "orientation": "vertical",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/^purgevalve$/",
+              "values": false
+            },
+            "showUnfilled": true,
+            "sizing": "auto",
+            "valueMode": "color"
+          },
+          "pluginVersion": "11.0.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-mqtt-datasource",
+                "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
+              },
+              "refId": "A",
+              "topic": "plc"
+            }
+          ],
+          "title": "パージバルブ",
+          "type": "bargauge"
+        },
+        {
+          "datasource": {},
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 4,
+            "x": 19,
+            "y": 0
+          },
+          "id": 9,
+          "maxDataPoints": 1000,
+          "options": {
+            "displayMode": "lcd",
+            "maxVizHeight": 300,
+            "minVizHeight": 16,
+            "minVizWidth": 8,
+            "namePlacement": "auto",
+            "orientation": "vertical",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/^productvalve$/",
+              "values": false
+            },
+            "showUnfilled": true,
+            "sizing": "auto",
+            "valueMode": "color"
+          },
+          "pluginVersion": "11.0.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-mqtt-datasource",
+                "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
+              },
+              "refId": "A",
+              "topic": "plc"
+            }
+          ],
+          "title": "プロダクトバルブ",
+          "type": "bargauge"
+        },
+        {
+          "datasource": {},
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds",
+                "seriesBy": "last"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "axisSoftMax": 3300,
+                "axisSoftMin": 0,
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 30,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 5,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 0,
+              "mappings": [],
+              "max": 3300,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "blue",
+                    "value": 1000
+                  },
+                  {
+                    "color": "orange",
+                    "value": 2000
+                  },
+                  {
+                    "color": "red",
+                    "value": 3000
+                  }
+                ]
+              },
+              "unit": "pressurepa"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 23,
+            "x": 0,
+            "y": 5
+          },
+          "id": 3,
+          "maxDataPoints": 1000,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": false
+            },
+            "tooltip": {
+              "maxHeight": 600,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.0.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-mqtt-datasource",
+                "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
+              },
+              "refId": "A",
+              "topic": "plc"
+            }
+          ],
+          "title": "圧力の推移",
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "byVariable": false,
+                "include": {
+                  "names": [
+                    "pressure",
+                    "Time"
+                  ]
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
         },
         {
           "datasource": {
             "type": "grafana-mqtt-datasource",
-            "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
+            "uid": "adoq5o1nl0p34c"
           },
           "fieldConfig": {
             "defaults": {
@@ -196,9 +640,9 @@ data:
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
-                "barAlignment": 0,
+                "barAlignment": 1,
                 "drawStyle": "line",
-                "fillOpacity": 0,
+                "fillOpacity": 20,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -207,10 +651,125 @@ data:
                 },
                 "insertNulls": false,
                 "lineInterpolation": "smooth",
-                "lineWidth": 1,
-                "pointSize": 5,
+                "lineWidth": 5,
+                "pointSize": 8,
                 "scaleDistribution": {
-                  "type": "linear"
+                  "log": 2,
+                  "type": "log"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "max": 600,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 23,
+            "x": 0,
+            "y": 9
+          },
+          "id": 7,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "maxHeight": 600,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.0.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-mqtt-datasource",
+                "uid": "adoq5o1nl0p34c"
+              },
+              "refId": "A",
+              "topic": "plc"
+            }
+          ],
+          "title": "Flow Data",
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "Time",
+                    "aflow",
+                    "bflow",
+                    "productflow",
+                    "purgeflow"
+                  ]
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "adoq5o1nl0p34c"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 1,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 5,
+                "pointSize": 8,
+                "scaleDistribution": {
+                  "log": 2,
+                  "type": "log"
                 },
                 "showPoints": "auto",
                 "spanNulls": false,
@@ -240,33 +799,52 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 11,
-            "w": 24,
+            "h": 5,
+            "w": 23,
             "x": 0,
-            "y": 25
+            "y": 14
           },
-          "id": 1,
+          "id": 12,
           "options": {
             "legend": {
-              "calcs": [],
+              "calcs": [
+                "lastNotNull"
+              ],
               "displayMode": "list",
-              "placement": "bottom",
+              "placement": "right",
               "showLegend": true
             },
             "tooltip": {
+              "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "10.2.3",
+          "pluginVersion": "11.0.0",
           "targets": [
             {
               "datasource": {
                 "type": "grafana-mqtt-datasource",
-                "uid": "dc689bcc-7e36-4afc-952c-82de57338aef"
+                "uid": "adoq5o1nl0p34c"
               },
               "refId": "A",
               "topic": "plc"
+            }
+          ],
+          "title": "Comp Data",
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "Time",
+                    "acomp",
+                    "bcomp",
+                    "ccomp"
+                  ]
+                }
+              }
             }
           ],
           "type": "timeseries"
@@ -282,10 +860,11 @@ data:
         "from": "now-5m",
         "to": "now"
       },
+      "timeRangeUpdatedDuringEditOrView": false,
       "timepicker": {},
       "timezone": "",
       "title": "SCADA",
       "uid": "b4e94ce6-40cc-4f31-9849-dd817641685c",
-      "version": 5,
+      "version": 1,
       "weekStart": ""
     }
