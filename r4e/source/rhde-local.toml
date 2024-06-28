@@ -1,7 +1,0 @@
-id = "rhde-local"
-name = "Red Hat Device Edge local repo"
-type = "yum-baseurl"
-url = "file:///var/repos/rhde-local/"
-check_gpg = false
-check_ssl = false
-system = false

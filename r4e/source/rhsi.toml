@@ -1,10 +1,8 @@
-check_gpg = false
-check_repogpg = false
-check_ssl = true
-gpgkeys = "<REPLACE_YOUR_GPG_KEYS>"
 id = "rhsi"
 name = "Red Hat Service Interconnect 1.4"
-rhsm = true
-system = true
 type = "yum-baseurl"
 url = "https://cdn.redhat.com/content/dist/layered/rhel9/x86_64/rhai/1/os"
+check_gpg = true
+check_ssl = true
+system = false
+rhsm = true
