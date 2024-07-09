@@ -17,11 +17,9 @@ spec:
       protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 32003
     - name: 502-tcp
       protocol: TCP
       port: 502
       targetPort: 502
-      nodePort: 32004
   selector:
     app: plc
