@@ -9,9 +9,11 @@ spec:
       protocol: TCP
       port: 8161
       targetPort: 8161
+      nodePort: 30099
     - name: amq-broker-hdls-svc61616
       protocol: TCP
       port: 61616
       targetPort: 61616
+      nodePort: 30291
   selector:
     app: amq-broker

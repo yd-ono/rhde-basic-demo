@@ -2,9 +2,10 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: grafana
+  namespace: dgw
 spec:
   port:
-    targetPort: http-grafana
+    targetPort: 3000
   to:
     kind: Service
     name: grafana
