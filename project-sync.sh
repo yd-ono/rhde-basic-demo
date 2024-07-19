@@ -1,11 +1,12 @@
 #!/bin/bash
 
 git add .
-git commit -a -m $1
+git commit -a -m "git update"
 git push
 
-AWX_TOKEN="Y6HCrWsFQW5D7tnReXlaLwXpgH5g6y"
+ANSIBLE_HOST=192.168.3.102
+AWX_TOKEN="LGjLioQ6fTAf8mB3SEFCMUR3llUPao"
 curl --insecure -X POST \
-	-H "Authorization: Bearer $AWX_TOKEN" \
-	-H "Content-Type: application/json" \
-	https://localhost/api/v2/projects/8/update/
+        -H "Authorization: Bearer $AWX_TOKEN" \
+        -H "Content-Type: application/json" \
+        https://$ANSIBLE_HOST/api/v2/projects/8/update/
