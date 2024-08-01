@@ -15,5 +15,5 @@ IMAGE_TYPE="edge-commit"
 if [ ${VER} = "1.0.0" ]; then
 	sudo composer-cli compose start-ostree ${BLUEPRINT} ${IMAGE_TYPE}
 else
-	sudo composer-cli compose start-ostree --url=http://${OSTREE_REPO_ENDPOINT}:9000/ostree/repo/ --ref=${REFS} --parent ${REFS} ${BLUEPRINT} ${IMAGE_TYPE}
+	sudo composer-cli compose start-ostree --url=http://localhost:9000/ostree/repo/ --ref=${REFS} --parent ${REFS} ${BLUEPRINT} ${IMAGE_TYPE}
 fi

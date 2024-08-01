@@ -19,8 +19,12 @@ echo "[Updated Commit]"
 sudo ostree --repo=${COMMIT_DIR}/repo show ${REFS}
 
 ## upgrade ostree repo
-sudo ostree --repo=${HTTP_ROOT}/ostree/repo pull-local ${COMMIT_DIR}/repo ${REFS}
+sudo ostree --repo=${HTTP_ROOT}/ostree/repo pull-local ${COMMIT_DIR}/repo
 
 echo "---"
 echo "[Current Commit]"
 sudo ostree --repo=${HTTP_ROOT}/ostree/repo show ${REFS}
+
+
+# set permission
+sudo chcon -t httpd_sys_content_t usr/share/nginx/html -R

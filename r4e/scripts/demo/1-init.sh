@@ -17,3 +17,6 @@ sudo cp -pr ${COMMIT_DIR}/repo ${HTTP_ROOT}/ostree/
 sudo ostree --repo=${HTTP_ROOT}/ostree/repo ls ${REFS}
 echo "---"
 sudo ostree --repo=${HTTP_ROOT}/ostree/repo show ${REFS}
+
+# set permission
+sudo chcon -t httpd_sys_content_t usr/share/nginx/html -R
