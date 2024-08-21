@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - control-deployment.yaml
+  - mqtt-deployment.yaml
+  - mqtt-service.yaml
+  - simulate-deployment.yaml
+  - ui-deployment.yaml
+  - ui-service.yaml
