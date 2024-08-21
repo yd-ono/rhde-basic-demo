@@ -6,7 +6,6 @@ metadata:
     skupper.io/port: '8001'
     skupper.io/proxy: tcp
   name: model-gen
-  namespace: cps
   labels:
     app: model-gen
 spec:

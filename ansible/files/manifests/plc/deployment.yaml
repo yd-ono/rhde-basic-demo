@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: plc
-  namespace: dgw
 spec:
   strategy: {}
   selector:

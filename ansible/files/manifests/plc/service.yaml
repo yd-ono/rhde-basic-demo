@@ -6,7 +6,6 @@ metadata:
     skupper.io/port: '8080'
     skupper.io/proxy: tcp
   name: plc
-  namespace: dgw
   labels:
     app: plc
 spec:

@@ -6,7 +6,6 @@ metadata:
   labels:
     app: model-get
   name: model-get
-  namespace: cps
 spec:
   replicas: 1
   selector:

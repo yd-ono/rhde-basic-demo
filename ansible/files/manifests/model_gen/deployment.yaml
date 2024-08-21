@@ -6,7 +6,6 @@ metadata:
   labels:
     app: model-gen
   name: model-gen
-  namespace: cps
 spec:
   replicas: 1
   selector:
