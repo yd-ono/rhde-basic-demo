@@ -3,7 +3,6 @@ kind: Route
 metadata:
   name: dgw
 spec:
-  host: dgw.192.168.3.101.nip.io
   port:
     targetPort: 80
   to:
