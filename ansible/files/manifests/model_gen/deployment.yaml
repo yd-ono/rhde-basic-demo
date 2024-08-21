@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app: model-gen
+  labels:
+    app: model-gen
+  name: model-gen
+  namespace: cps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-gen
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        app: model-gen
+      labels:
+        app: model-gen
+        version: v2
+    spec:
+      containers:
+      - image: localhost/model_gen:v1
+        imagePullPolicy: IfNotPresent
+        name: model-gen
+        ports:
+        - containerPort: 8001
+          protocol: TCP
+        envFrom:
+          - configMapRef:
+              name: model-gen-config
+        volumeMounts:
+        - mountPath: /dev
+          name: dev
+        securityContext:
+          privileged: true
+      restartPolicy: Always
+      volumes:
+      - name: dev
+        hostPath:
+          path: /dev
+      serviceAccount: model-admin
+      serviceAccountName: model-admin

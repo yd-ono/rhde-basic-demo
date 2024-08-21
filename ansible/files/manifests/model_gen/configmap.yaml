@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: model-gen-config
+  namespace: cps
+data:
+  VIDEO_ADDRESS: '/dev/video0'
+  MODEL_ADDRESS: 'http://model-get-cps.apps.192.168.3.100.nip.io'
+  RECT_HEIGHT: '30'
+  RECT_WIDTH: '30'
+  POS0: '{"x": 477 , "y": 55}'
+  POS1: '{"x": 270 , "y": 52}'
+  POS2: '{"x": 59 , "y": 54}'
+  POS3: '{"x": 483 , "y": 182}'
+  POS4: '{"x": 269 , "y": 183}'
+  POS5: '{"x": 55, "y": 181}'
+  POS6: '{"x": 483 , "y": 327}'
+  POS7: '{"x": 266 , "y": 330}'
+  POS8: '{"x": 54, "y": 322}'
+  DEBUG: 'False'

@@ -1,13 +1,13 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: dgw-rb
-  namespace: dgw
+  name: model-admin-rb
+  namespace: cps
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: dgw-clusterrole
+  name: model-admin-clusterrole
 subjects:
 - kind: ServiceAccount
-  name: dgw
-  namespace: dgw
+  name: model-admin
+  namespace: cps

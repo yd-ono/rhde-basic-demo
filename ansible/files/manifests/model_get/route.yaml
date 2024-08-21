@@ -1,0 +1,16 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: model-get
+  namespace: cps
+  labels:
+    app: model-get
+spec:
+  host: model-get-cps.apps.192.168.3.100.nip.io
+  to:
+    kind: Service
+    name: model-get
+    weight: 100
+  port:
+    targetPort: 8000-tcp
+  wildcardPolicy: None

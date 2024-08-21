@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: grafana
+        update: "1.0"
     spec:
       securityContext:
         fsGroup: 472
@@ -25,16 +26,6 @@ spec:
         env:
         - name: GF_INSTALL_PLUGINS
           value: grafana-mqtt-datasource
-        - name: GF_SECURITY_ADMIN_USER
-          valueFrom:
-            secretKeyRef:
-              name: grafana
-              key: username
-        - name: GF_SECURITY_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: grafana
-              key: password
         ports:
         - containerPort: 3000
           name: http-grafana
@@ -58,9 +49,15 @@ spec:
         - mountPath: /etc/grafana/provisioning/dashboards/dashboard.yml
           subPath: dashboard.yml
           name: grafana-dashboard
+        # - mountPath: /etc/grafana/provisioning/dashboards/dashboard-scada.yml
+        #   subPath: dashboard-scada.yml
+        #   name: grafana-dashboard-scada
+        - mountPath: /var/lib/grafana/dashboards/OEE.json
+          subPath: OEE.json
+          name: grafana-dashboard-content
         - mountPath: /var/lib/grafana/dashboards/scada.json
           subPath: scada.json
-          name: grafana-dashboard-content
+          name: grafana-dashboard-content-scada
       volumes:
         - name: grafana-pv
           persistentVolumeClaim:
@@ -83,7 +80,19 @@ spec:
             items:
               - key: dashboard.yml
                 path: dashboard.yml
+        # - name: grafana-dashboard-scada
+        #   configMap:
+        #     name: grafana-dashboard
+        #     items:
+        #       - key: dashboard-scada.yml
+        #         path: dashboard-scada.yml
         - name: grafana-dashboard-content
+          configMap:
+            name: grafana-dashboard-content
+            items:
+              - key: OEE.json
+                path: OEE.json
+        - name: grafana-dashboard-content-scada
           configMap:
             name: grafana-dashboard-content
             items:

@@ -1,15 +1,13 @@
-kind: Route
 apiVersion: route.openshift.io/v1
+kind: Route
 metadata:
   name: dgw
-  namespace: dgw
-  labels:
-    app: dgw
 spec:
+  host: dgw.192.168.3.101.nip.io
+  port:
+    targetPort: 80-tcp
   to:
     kind: Service
     name: dgw
     weight: 100
-  port:
-    targetPort: 80-tcp
   wildcardPolicy: None

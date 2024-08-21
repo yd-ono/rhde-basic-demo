@@ -2,8 +2,8 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: grafana
-  namespace: dgw
 spec:
+  host: dashboard.192.168.3.101.nip.io
   port:
     targetPort: 3000
   to:

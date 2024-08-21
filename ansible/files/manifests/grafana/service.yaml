@@ -1,13 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    skupper.io/address: grafana-proxy
+    skupper.io/port: '3000'
+    skupper.io/proxy: tcp
   name: grafana
 spec:
   ports:
     - port: 3000
       protocol: TCP
       targetPort: http-grafana
-      nodePort: 31946
+      nodePort: 32002
   selector:
     app: grafana
   sessionAffinity: None

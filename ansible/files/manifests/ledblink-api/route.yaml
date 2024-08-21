@@ -1,0 +1,16 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: ledblink-api
+  namespace: cps
+  labels:
+    app: ledblink-api
+spec:
+  host: ledblink-api-cps.apps.192.168.3.100.nip.io
+  to:
+    kind: Service
+    name: led-api
+    weight: 100
+  port:
+    targetPort: 5000-tcp
+  wildcardPolicy: None

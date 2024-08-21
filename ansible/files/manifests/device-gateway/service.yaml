@@ -6,7 +6,6 @@ metadata:
     skupper.io/port: '80'
     skupper.io/proxy: tcp
   name: dgw
-  namespace: dgw
   labels:
     app: dgw
 spec:
@@ -16,7 +15,6 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 30741
     - name: 443-tcp
       protocol: TCP
       port: 443

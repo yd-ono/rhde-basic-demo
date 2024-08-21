@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app: model-get
+  labels:
+    app: model-get
+  name: model-get
+  namespace: cps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-get
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        app: model-get
+      labels:
+        app: model-get
+    spec:
+      containers:
+      - image: localhost/model_get:v1
+        imagePullPolicy: IfNotPresent
+        name: model-get
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+      restartPolicy: Always

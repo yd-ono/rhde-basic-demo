@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dgw
-  namespace: dgw
 spec:
   strategy: {}
   selector:
@@ -41,13 +40,13 @@ spec:
             privileged: true
             # runAsUser: 1002
             # runAsGroup: 1002
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "50m"
-            limits:
-              memory: "128Mi"
-              cpu: "100m"
+          # resources:
+          #   requests:
+          #     memory: "1Gi"
+          #     cpu: "1"
+          #   limits:
+          #     memory: "512Mi"
+          #     cpu: "500m"
       volumes:
       - name: pvc-dxpgateway
         persistentVolumeClaim:
