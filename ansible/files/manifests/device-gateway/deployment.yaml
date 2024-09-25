@@ -25,6 +25,8 @@ spec:
               protocol: TCP
             - containerPort: 443
               protocol: TCP
+            - containerPort: 52220
+              protocol: TCP
           volumeMounts:
           - mountPath: "/etc/dxpgateway"
             name: pvc-dxpgateway
@@ -33,7 +35,6 @@ spec:
           - mountPath: /mnt/sdcard/DeviceGateway.lic
             name: license
           - mountPath: /etc/dxpgateway/config/setting.dxg.tpl
-            subPath: setting.dxg.tpl
             name: setting
           securityContext:
             privileged: true
@@ -58,13 +59,8 @@ spec:
           path: /home/redhat/device-gateway/DeviceGateway.lic
           type: File
       - name: setting
-        configMap:
-          name: dgw-settings
-          items:
-            - key: setting.dxg.tpl
-              path: setting.dxg.tpl
-            # - key: setting.dxg.tpl
-            #   path: setting.dxg.tpl
-              # mode: 0777
+        hostPath:
+          path: /home/redhat/device-gateway/setting.dxg.tpl
+          type: File
       serviceAccount: dgw
       serviceAccountName: dgw

@@ -19,5 +19,9 @@ spec:
       protocol: TCP
       port: 443
       targetPort: 443
+    - name: opcua-tcp
+      protocol: TCP
+      port: 52220
+      targetPort: 52220
   selector:
     app: dgw
