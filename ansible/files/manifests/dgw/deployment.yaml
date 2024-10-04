@@ -61,15 +61,15 @@ spec:
         hostPath:
           path: /home/redhat/device-gateway/DeviceGateway.lic
           type: File
-      # - name: setting
-      #   hostPath:
-      #     path: /home/redhat/device-gateway/setting.dxg.tpl
-      #     type: File
       - name: setting
-        configMap:
-          name: dgw-settings
-          items:
-            - key: setting.dxg.tpl
-              path: setting.dxg.tpl
+        hostPath:
+          path: /home/redhat/device-gateway/setting.dxg.tpl
+          type: File
+      # - name: setting
+      #   configMap:
+      #     name: dgw-settings
+      #     items:
+      #       - key: setting.dxg.tpl
+      #         path: setting.dxg.tpl
       serviceAccount: dgw
       serviceAccountName: dgw
