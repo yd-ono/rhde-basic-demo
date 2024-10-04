@@ -4,7 +4,6 @@
     - all
   vars: # デフォルト変数
     namespace: cps
-    appname: device-gateway
     scenario: default
 
   tasks:
@@ -17,7 +16,7 @@
         mode: '0644'  # 適切なパーミッションを指定
 
     - name: Kubernetes Podを再起動
-      command: oc delete po -l app={{ appname }} -n {{ namespace }}
+      command: oc delete po -l app=dgw -n {{ namespace }}
       register: restart_result
 
     - name: 再起動結果を表示
