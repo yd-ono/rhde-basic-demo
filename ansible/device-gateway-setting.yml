@@ -1,0 +1,26 @@
+---
+- name: Device Gatewayのsetting.dxgをIoT Gatewayに配置してDevice Gatewayへ設定を反映する
+  hosts:
+    - all
+  vars: # デフォルト変数
+    namespace: cps
+    appname: device-gateway
+    scenario: default
+
+  tasks:
+    - name: ファイルを指定されたディレクトリにコピー
+      copy:
+        src: "/runner/project/ansible/files/conf/device-gateway/{{ scenario }}"
+        dest: /home/redhat/device-gateway/setting.dxg.tpl  # 配置先のディレクトリを指定
+        owner: redhat  # 必要に応じて指定
+        group: redhat  # 必要に応じて指定
+        mode: '0644'  # 適切なパーミッションを指定
+
+    - name: Kubernetes Podを再起動
+      command: oc delete po -l app={{ appname }} -n {{ namespace }}
+      register: restart_result
+
+    - name: 再起動結果を表示
+      debug:
+        msg: "{{ restart_result.stdout }}"
+
