@@ -49,12 +49,6 @@ spec:
         - mountPath: /etc/grafana/provisioning/dashboards/dashboard.yml
           subPath: dashboard.yml
           name: grafana-dashboard
-        # - mountPath: /etc/grafana/provisioning/dashboards/dashboard-scada.yml
-        #   subPath: dashboard-scada.yml
-        #   name: grafana-dashboard-scada
-        - mountPath: /var/lib/grafana/dashboards/OEE.json
-          subPath: OEE.json
-          name: grafana-dashboard-content
         - mountPath: /var/lib/grafana/dashboards/scada.json
           subPath: scada.json
           name: grafana-dashboard-content-scada
@@ -80,18 +74,6 @@ spec:
             items:
               - key: dashboard.yml
                 path: dashboard.yml
-        # - name: grafana-dashboard-scada
-        #   configMap:
-        #     name: grafana-dashboard
-        #     items:
-        #       - key: dashboard-scada.yml
-        #         path: dashboard-scada.yml
-        - name: grafana-dashboard-content
-          configMap:
-            name: grafana-dashboard-content
-            items:
-              - key: OEE.json
-                path: OEE.json
         - name: grafana-dashboard-content-scada
           configMap:
             name: grafana-dashboard-content
