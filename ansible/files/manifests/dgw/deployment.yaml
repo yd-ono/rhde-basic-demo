@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: container
-          image: quay.io/yono/dgw:3.3.0-amd64
+          image: quay.io/yono/dgw:3.4.3
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
