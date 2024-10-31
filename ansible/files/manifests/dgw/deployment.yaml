@@ -34,10 +34,8 @@ spec:
             name: pvc-sdcard
           - mountPath: /mnt/sdcard/DeviceGateway.lic
             name: license
-          # - mountPath: /etc/dxpgateway/config/setting.dxg.tpl
-          #   name: setting
-          # - mountPath: /etc/dxpgateway/config/setting.dxg.tpl
-          #   name: setting
+          - mountPath: /etc/dxpgateway/config/setting.dxg.tpl
+            name: setting
           securityContext:
             privileged: true
             # runAsUser: 1002
@@ -64,11 +62,11 @@ spec:
       #   hostPath:
       #     path: /home/redhat/device-gateway/setting.dxg.tpl
       #     type: File
-      # - name: setting
-      #   configMap:
-      #     name: dgw-settings
-      #     items:
-      #       - key: setting.dxg.tpl
-      #         path: setting.dxg.tpl
+      - name: setting
+        configMap:
+          name: dgw-settings
+          items:
+            - key: setting.dxg.tpl
+              path: setting.dxg.tpl
       serviceAccount: dgw
       serviceAccountName: dgw
