@@ -1,20 +1,8 @@
-name = "rhde-microshift-1.0.1"
-description = "RHDE w/ Microshift Blueprints"
-version = "1.0.1"
+name = "iot-gateway-1.0.0"
+description = "IoT Gateway Blueprint w/ RHDE"
+version = "1.0.0"
 modules = []
 groups = []
-
-[[packages]]
-name = "microshift"
-version = "*"
-
-[[packages]]
-name = "openshift-clients"
-version = "*"
-
-[[packages]]
-name = "subscription-manager"
-version = "*"
 
 [[packages]]
 name = "cronie"
@@ -30,10 +18,6 @@ version = "*"
 
 [[packages]]
 name = "python3-kubernetes"
-version = "*"
-
-[[packages]]
-name = "subscription-manager"
 version = "*"
 
 [[packages]]
@@ -80,14 +64,11 @@ version = "*"
 name = "redhat-release"
 version = "*"
 
-[[containers]]
-source = "quay.io/yono/dgw:3.3.0-amd64"
-
 [customizations]
 hostname = "microshift-node"
 
 [customizations.services]
-enabled = ["crio", "microshift"]
+enabled = ["rpm-ostreed"]
 hostname = "microshift-node"
 
 [customizations.firewall]

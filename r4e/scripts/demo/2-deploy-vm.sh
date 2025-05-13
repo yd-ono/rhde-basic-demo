@@ -12,8 +12,8 @@ virt-install \
     --network network=default,model=virtio \
     --events on_reboot=restart \
     --location /var/lib/libvirt/images/rhde-ztp.iso \
-    --graphics vnc,port=5901,listen=0.0.0.0 \
-    --extra-args "inst.ks=http://192.168.122.1:9000/ks.cfg" \
+    --graphics vnc,port=5902,listen=0.0.0.0 \
+    --extra-args "inst.ks=http://192.168.122.1:8888/ks.cfg" \
     --noautoconsole \
     --check disk_size=off \
     --quiet

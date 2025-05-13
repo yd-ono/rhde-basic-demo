@@ -1,16 +1,8 @@
-name = "rhde-microshift-1.0.1"
-description = "RHDE w/ Microshift Blueprints"
-version = "1.0.1"
+name = "rhde-microshift-1.0.2"
+description = "RHDE Basic Blueprints"
+version = "1.0.2"
 modules = []
 groups = []
-
-[[packages]]
-name = "microshift"
-version = "*"
-
-[[packages]]
-name = "openshift-clients"
-version = "*"
 
 [[packages]]
 name = "subscription-manager"
@@ -80,14 +72,7 @@ version = "*"
 name = "redhat-release"
 version = "*"
 
-[[containers]]
-source = "quay.io/yono/dgw:3.3.0-amd64"
-
 [customizations]
-hostname = "microshift-node"
-
-[customizations.services]
-enabled = ["crio", "microshift"]
 hostname = "microshift-node"
 
 [customizations.firewall]
@@ -105,3 +90,10 @@ key = ""
 home = "/home/redhat/"
 shell = "/usr/bin/bash"
 groups = ["users", "wheel"]
+
+[[customizations.files]]
+path = "/etc/foobar"
+mode = "0644"
+user = "root"
+group = "root"
+data = "Hello world!"

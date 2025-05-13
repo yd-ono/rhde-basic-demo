@@ -5,7 +5,7 @@
 ## Download ISO
 # set the offline token and checksum parameters
 # get an access token
-export TOKEN="<your Red Hat Customer Portal API token>"
+# export TOKEN=$(echo $TOKEN)
 access_token=$(curl https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token -d grant_type=refresh_token -d client_id=rhsm-api -d refresh_token=$TOKEN | jq -r '.access_token')
 
 # RHEL 9.2 boot iso

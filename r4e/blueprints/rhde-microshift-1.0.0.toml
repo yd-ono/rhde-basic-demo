@@ -80,13 +80,13 @@ ports = ["22:tcp", "80:tcp", "443:tcp", "6443:tcp", "5353:udp"]
 
 [[customizations.sshkey]]
 user = "root"
-key = "YOUR_SSH_PUB_KEY"
+key = ""
 
 [[customizations.user]]
 name = "redhat"
 description = "Admin user"
 password = '<password hash obatained with: python3 -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())' >'
-key = "YOUR_SSH_PUB_KEY"
+key = ""
 home = "/home/redhat/"
 shell = "/usr/bin/bash"
 groups = ["users", "wheel"]
