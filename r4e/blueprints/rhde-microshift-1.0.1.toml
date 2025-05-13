@@ -95,13 +95,13 @@ ports = ["22:tcp", "80:tcp", "443:tcp", "6443:tcp", "5353:udp"]
 
 [[customizations.sshkey]]
 user = "root"
-key = "<REPLACE_YOUR_SSH_PUB_KEY>"
+key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWMsj1B8fOaOTDZWAH5EmM4b835I/JBpAz73v15GuUuKEcHxEZOHF3ghchYWq0dwgtqXTdwWsZRyuDhd4LF69WIcodcwRZRqOXMRYsnQ6376ynM2Q+MCtDNBD0DzJpqfCM5qEFIzG8SMmQzrpISTkQ9iDTPf0iMkfZuIhjrtR44+YG9AfU/C9SSHIjIjxxvszIx7X32S0kuQnBi6kg2N5e4Hm9il7CVYjMLbAkMbh6aLqb1lPbX3mNsoRS36xyuaOW4Ai1eooKhmcOZ1Xam3JaC1oMiLPWJmNq9Hlanxh55wjP49RGPK+Gnwir5GUG4iPcP0o7Qe/FeXG16wildCOw0QAYdUNT94oMRXZbN/t8hZ1XTDt3tvVOIun4zUgDLgtNx2J+JZBB4UyLhcXi0clnlY8rGG+DSYGrcOJugqSwX4FZVwjxc/4LB0rVRAZd8BOp7LmUsv/QB1pCpZ9ufhmDJDmhB1Q8A5gMWS+hNUIVXXLgfuyhS4ojPw5LZ4QNYuU= redhat@edge-management.local"
 
 [[customizations.user]]
 name = "redhat"
 description = "Admin user"
-password = '<password hash obatained with: python3 -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())' >'
-key = "<REPLACE_YOUR_SSH_PUB_KEY>"
+password = '$6$B495skea5D5l4ob0$KzPsTMi5nqQEpi7Zq3zAYuu.LXGARbO3ZoCEBl0DciEc.aXbQ9iN8GrlQh6DRSMWuMPFCNEIYwpneSy3wI.fT/'
+key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWMsj1B8fOaOTDZWAH5EmM4b835I/JBpAz73v15GuUuKEcHxEZOHF3ghchYWq0dwgtqXTdwWsZRyuDhd4LF69WIcodcwRZRqOXMRYsnQ6376ynM2Q+MCtDNBD0DzJpqfCM5qEFIzG8SMmQzrpISTkQ9iDTPf0iMkfZuIhjrtR44+YG9AfU/C9SSHIjIjxxvszIx7X32S0kuQnBi6kg2N5e4Hm9il7CVYjMLbAkMbh6aLqb1lPbX3mNsoRS36xyuaOW4Ai1eooKhmcOZ1Xam3JaC1oMiLPWJmNq9Hlanxh55wjP49RGPK+Gnwir5GUG4iPcP0o7Qe/FeXG16wildCOw0QAYdUNT94oMRXZbN/t8hZ1XTDt3tvVOIun4zUgDLgtNx2J+JZBB4UyLhcXi0clnlY8rGG+DSYGrcOJugqSwX4FZVwjxc/4LB0rVRAZd8BOp7LmUsv/QB1pCpZ9ufhmDJDmhB1Q8A5gMWS+hNUIVXXLgfuyhS4ojPw5LZ4QNYuU= redhat@edge-management.local"
 home = "/home/redhat/"
 shell = "/usr/bin/bash"
 groups = ["users", "wheel"]
