@@ -1,16 +1,23 @@
 version: 3
 
+
 build_arg_defaults:
+  ANSIBLE_GALAXY_CLI_COLLECTION_OPTS: "-v"
+
   EE_BASE_IMAGE: registry.redhat.io/ansible-automation-platform-24/ee-minimal-rhel9:latest
   EE_BUILDER_IMAGE: registry.redhat.io/ansible-automation-platform-24/ansible-builder-rhel9
 
+images:
+  base_image:
+    name: registry.redhat.io/ansible-automation-platform-24/ee-minimal-rhel9:latest
+
 dependencies:
-  galaxy:
-    - requirements.yml
-  python:
-    - requirements.txt
+  galaxy: requirements.yml
+  python: requirements.txt
 
-additional_build_steps:
-  prepend:
-    - RUN curl -s https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz -o - | tar zxvf - -C /usr/local/bin/
-
+additional_build_steps: 
+  prepend_final:
+    - RUN curl -s https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz -o oc.tar.gz
+    - RUN tar -xzf oc.tar.gz -C /usr/local/bin/
+    - RUN chmod +x /usr/local/bin/oc /usr/local/bin/kubectl
+    - RUN rm -f oc.tar.gz
