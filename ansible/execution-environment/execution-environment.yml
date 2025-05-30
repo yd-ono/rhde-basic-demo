@@ -1,14 +1,16 @@
----
-version: 1
+version: 3
 
 build_arg_defaults:
-  EE_BASE_IMAGE: 'registry.redhat.io/ansible-automation-platform-24/ee-minimal-rhel9:latest'
-  EE_BUILDER_IMAGE: 'registry.redhat.io/ansible-automation-platform-24/ansible-builder-rhel9'
+  EE_BASE_IMAGE: registry.redhat.io/ansible-automation-platform-24/ee-minimal-rhel9:latest
+  EE_BUILDER_IMAGE: registry.redhat.io/ansible-automation-platform-24/ansible-builder-rhel9
+
+dependencies:
+  galaxy:
+    - requirements.yml
+  python:
+    - requirements.txt
 
 additional_build_steps:
   prepend:
     - RUN curl -s https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz -o - | tar zxvf - -C /usr/local/bin/
 
-dependencies:
-  galaxy: requirements.yml
-  python: requirements.txt
