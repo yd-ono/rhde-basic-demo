@@ -6,6 +6,7 @@
     controller_url: https://{{ controller_host }}/api/v2
     controller_inventory: Edge Systems
     provisioning_template: Provision Edge Device
+    client_ipv4_address: "{{ client_ipv4_address | default(ansible_default_ipv4.address) }}"
   module_defaults:
     ansible.builtin.uri:
       user: "{{ controller_api_username }}"
@@ -31,7 +32,7 @@
         body:
           name: "edge-{{ ansible_default_ipv4.macaddress | replace(':','') }}"
           variables:
-            'ansible_host: {{ ansible_default_ipv4.address }}'
+            'ansible_host: {{ client_ipv4_address }}'
       register: create_host
       changed_when:
         - create_host.status | int == 201
