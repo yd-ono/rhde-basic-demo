@@ -1,56 +1,173 @@
-- name: register a edge system to ansible controller
+---
+- name: Register client system to ansible controller inventory
   hosts:
     - localhost
   vars:
     ansible_connection: local
-    controller_url: https://{{ controller_host }}/api/v2
-    controller_inventory: Edge Systems
-    provisioning_template: Provision Edge Device
+    controller_url: "https://{{ controller_host }}/api/v2"
+    controller_inventory: "{{ target_inventory | default('Edge Systems') }}"
+    provisioning_template: "{{ provision_template | default('Provision Edge Device') }}"
+    # クライアントIPアドレス（Survey変数として受け取る）
+    client_ip: "{{ client_ip_address }}"
+    # ホスト名の命名規則をカスタマイズ可能
+    host_name_prefix: "{{ hostname_prefix | default('client') }}"
+    # 追加のホスト変数
+    additional_host_vars: "{{ extra_host_vars | default({}) }}"
+  
   module_defaults:
     ansible.builtin.uri:
       user: "{{ controller_api_username }}"
       password: "{{ controller_api_password }}"
       force_basic_auth: yes
-      validate_certs: no
+      validate_certs: "{{ validate_ssl_certs | default(false) }}"
+      timeout: 30
 
   tasks:
-    - name: find the id of {{ controller_inventory }}
+    - name: Validate required variables
+      ansible.builtin.assert:
+        that:
+          - controller_host is defined
+          - controller_api_username is defined
+          - controller_api_password is defined
+          - client_ip is defined
+          - client_ip | ansible.utils.ipaddr
+        fail_msg: "Required variables are missing or client_ip is not a valid IP address"
+
+    - name: Generate unique hostname
+      ansible.builtin.set_fact:
+        client_hostname: "{{ host_name_prefix }}-{{ client_ip | replace('.', '-') }}-{{ ansible_date_time.epoch }}"
+
+    - name: Find the inventory ID for {{ controller_inventory }}
       ansible.builtin.uri:
-        url: "{{ controller_url }}/inventories/?name={{ controller_inventory | regex_replace(' ', '%20') }}"
+        url: "{{ controller_url }}/inventories/?name={{ controller_inventory | urlencode }}"
+        method: GET
       register: controller_inventory_lookup
 
-    - name: set inventory id fact
+    - name: Verify inventory exists
+      ansible.builtin.assert:
+        that:
+          - controller_inventory_lookup.json.count > 0
+        fail_msg: "Inventory '{{ controller_inventory }}' not found"
+
+    - name: Set inventory ID fact
       ansible.builtin.set_fact:
         controller_inventory_id: "{{ controller_inventory_lookup.json.results[0].id }}"
 
-    - name: create host in inventory {{ controller_inventory }}
+    - name: Check if host already exists
+      ansible.builtin.uri:
+        url: "{{ controller_url }}/inventories/{{ controller_inventory_id }}/hosts/?name={{ client_hostname }}"
+        method: GET
+      register: existing_host_check
+
+    - name: Prepare host variables
+      ansible.builtin.set_fact:
+        host_variables: "{{ base_host_vars | combine(additional_host_vars) }}"
+      vars:
+        base_host_vars:
+          ansible_host: "{{ client_ip }}"
+          registered_date: "{{ ansible_date_time.iso8601 }}"
+          registration_source: "api"
+
+    - name: Create host in inventory {{ controller_inventory }}
       ansible.builtin.uri:
         url: "{{ controller_url }}/inventories/{{ controller_inventory_id }}/hosts/"
         method: POST
         body_format: json
         body:
-          name: "edge-{{ ansible_default_ipv4.macaddress | replace(':','') }}"
-          variables:
-            'ansible_host: {{ ansible_default_ipv4.address }}'
-      register: create_host
-      changed_when:
-        - create_host.status | int == 201
-      failed_when:
-        - create_host.status | int != 201
-        - "'already exists' not in create_host.content"
+          name: "{{ client_hostname }}"
+          description: "Auto-registered from IP {{ client_ip }} on {{ ansible_date_time.iso8601 }}"
+          variables: "{{ host_variables | to_nice_yaml }}"
+        status_code:
+          - 201
+          - 400
+      register: create_host_result
+      when: existing_host_check.json.count == 0
 
-    - name: find the id of {{ provisioning_template }}
+    - name: Update existing host if found
       ansible.builtin.uri:
-        url: "{{ controller_url }}/workflow_job_templates/?name={{ provisioning_template | regex_replace(' ', '%20') }}"
-      register: job_template_lookup
+        url: "{{ controller_url }}/hosts/{{ existing_host_check.json.results[0].id }}/"
+        method: PATCH
+        body_format: json
+        body:
+          description: "Updated registration from IP {{ client_ip }} on {{ ansible_date_time.iso8601 }}"
+          variables: "{{ host_variables | to_nice_yaml }}"
+        status_code:
+          - 200
+      register: update_host_result
+      when: existing_host_check.json.count > 0
 
-    - name: set the id of {{ provisioning_template }}
+    - name: Set registration result
+      ansible.builtin.set_fact:
+        host_registration_status: "{{ 'created' if create_host_result.changed | default(false) else 'updated' if update_host_result.changed | default(false) else 'unchanged' }}"
+        registered_host_id: "{{ create_host_result.json.id if create_host_result.json is defined else existing_host_check.json.results[0].id }}"
+
+    - name: Find provisioning template ID
+      ansible.builtin.uri:
+        url: "{{ controller_url }}/workflow_job_templates/?name={{ provisioning_template | urlencode }}"
+        method: GET
+      register: job_template_lookup
+      when: 
+        - provisioning_template is defined
+        - auto_provision | default(true) | bool
+
+    - name: Verify provisioning template exists
+      ansible.builtin.assert:
+        that:
+          - job_template_lookup.json.count > 0
+        fail_msg: "Workflow job template '{{ provisioning_template }}' not found"
+      when: job_template_lookup is defined
+
+    - name: Set provisioning template ID
       ansible.builtin.set_fact:
         job_template_id: "{{ job_template_lookup.json.results[0].id }}"
+      when: job_template_lookup is defined
 
-    - name: trigger {{ provisioning_template }}
+    - name: Trigger provisioning workflow
       ansible.builtin.uri:
         url: "{{ controller_url }}/workflow_job_templates/{{ job_template_id }}/launch/"
         method: POST
+        body_format: json
+        body:
+          limit: "{{ client_hostname }}"
+          extra_vars:
+            target_host: "{{ client_hostname }}"
+            target_ip: "{{ client_ip }}"
         status_code:
           - 201
+      register: provision_job_result
+      when: 
+        - job_template_id is defined
+        - host_registration_status == 'created'
+
+    - name: Display registration summary
+      ansible.builtin.debug:
+        msg:
+          - "=== Host Registration Summary ==="
+          - "Hostname: {{ client_hostname }}"
+          - "IP Address: {{ client_ip }}"
+          - "Inventory: {{ controller_inventory }}"
+          - "Status: {{ host_registration_status }}"
+          - "Host ID: {{ registered_host_id }}"
+          - "Provisioning Job: {{ provision_job_result.json.id if provision_job_result.json is defined else 'Not triggered' }}"
+
+    - name: Log registration event
+      ansible.builtin.uri:
+        url: "{{ controller_url }}/activity_stream/"
+        method: GET
+        body_format: json
+        status_code:
+          - 200
+      register: activity_log
+      ignore_errors: yes
+
+  rescue:
+    - name: Handle registration failure
+      ansible.builtin.debug:
+        msg:
+          - "=== Registration Failed ==="
+          - "Client IP: {{ client_ip | default('undefined') }}"
+          - "Error: {{ ansible_failed_result.msg | default('Unknown error') }}"
+      
+    - name: Fail the playbook
+      ansible.builtin.fail:
+        msg: "Host registration failed for IP {{ client_ip | default('undefined') }}"
