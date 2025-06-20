@@ -1,12 +1,13 @@
-- name: register a edge system to ansible controller
-  hosts:
-    - localhost
+- name: Register a client system to Ansible Controller
+  hosts: localhost
+  gather_facts: false
+
   vars:
     ansible_connection: local
-    controller_url: https://{{ controller_host }}/api/v2
-    controller_inventory: Edge Systems
-    provisioning_template: Provision Edge Device
-    client_ipv4_address: "{{ client_ipv4_address | default(ansible_default_ipv4.address) }}"
+    controller_url: "https://{{ controller_host }}/api/v2"
+    controller_inventory: "Edge Systems"
+    provisioning_template: "Provision Edge Device"
+
   module_defaults:
     ansible.builtin.uri:
       user: "{{ controller_api_username }}"
@@ -15,43 +16,62 @@
       validate_certs: no
 
   tasks:
-    - name: find the id of {{ controller_inventory }}
+
+    - name: Fail if required variables are not provided
+      ansible.builtin.fail:
+        msg: "Required variable '{{ item }}' must be provided as an extra-var"
+      loop:
+        - controller_host
+        - controller_api_username
+        - controller_api_password
+        - client_ipv4_address
+      when: vars[item] is not defined
+
+    - name: Find the ID of inventory '{{ controller_inventory }}'
       ansible.builtin.uri:
-        url: "{{ controller_url }}/inventories/?name={{ controller_inventory | regex_replace(' ', '%20') }}"
+        url: "{{ controller_url }}/inventories/?name={{ controller_inventory | urlencode }}"
+        method: GET
       register: controller_inventory_lookup
 
-    - name: set inventory id fact
+    - name: Set inventory ID
       ansible.builtin.set_fact:
         controller_inventory_id: "{{ controller_inventory_lookup.json.results[0].id }}"
 
-    - name: create host in inventory {{ controller_inventory }}
+    - name: Create host in inventory '{{ controller_inventory }}'
       ansible.builtin.uri:
         url: "{{ controller_url }}/inventories/{{ controller_inventory_id }}/hosts/"
         method: POST
         body_format: json
         body:
-          name: "edge-{{ ansible_default_ipv4.macaddress | replace(':','') }}"
-          variables:
-            'ansible_host: {{ client_ipv4_address }}'
+          name: "edge-{{ client_ipv4_address | replace('.', '-') }}"
+          variables: |
+            ansible_host: {{ client_ipv4_address }}
+        status_code: [201, 400]
       register: create_host
-      changed_when:
-        - create_host.status | int == 201
-      failed_when:
-        - create_host.status | int != 201
+
+    - name: Fail if host creation failed and not already exists
+      ansible.builtin.fail:
+        msg: "Host creation failed: {{ create_host.content }}"
+      when:
+        - create_host.status != 201
         - "'already exists' not in create_host.content"
 
-    - name: find the id of {{ provisioning_template }}
+    - name: Find the ID of workflow job template '{{ provisioning_template }}'
       ansible.builtin.uri:
-        url: "{{ controller_url }}/workflow_job_templates/?name={{ provisioning_template | regex_replace(' ', '%20') }}"
+        url: "{{ controller_url }}/workflow_job_templates/?name={{ provisioning_template | urlencode }}"
+        method: GET
       register: job_template_lookup
 
-    - name: set the id of {{ provisioning_template }}
+    - name: Set workflow job template ID
       ansible.builtin.set_fact:
         job_template_id: "{{ job_template_lookup.json.results[0].id }}"
 
-    - name: trigger {{ provisioning_template }}
+    - name: Launch provisioning job
       ansible.builtin.uri:
         url: "{{ controller_url }}/workflow_job_templates/{{ job_template_id }}/launch/"
         method: POST
-        status_code:
-          - 201
+        body_format: json
+        body:
+          extra_vars:
+            target_host: "edge-{{ client_ipv4_address | replace('.', '-') }}"
+        status_code: [201]
